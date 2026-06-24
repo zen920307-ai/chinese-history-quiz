@@ -229,6 +229,27 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 /* 称号解锁提示 */
 .unlock-badge{margin:14px auto 0;padding:8px 18px;background:rgba(196,151,90,.1);border:1px solid rgba(196,151,90,.25);border-radius:20px;color:#c4975a;font-size:.85rem;letter-spacing:.1em;display:none}
 .unlock-badge.show{display:block;animation:feedbackIn .5s ease}
+
+/* 返回首页按钮 */
+.home-btn{background:rgba(255,255,255,.04);color:rgba(200,180,150,.6);border:1px solid rgba(196,151,90,.15);border-radius:6px;padding:5px 14px;font-size:.78rem;font-family:inherit;cursor:pointer;transition:all .3s ease;letter-spacing:.1em}
+.home-btn:hover{background:rgba(196,151,90,.1);color:#c4975a;border-color:rgba(196,151,90,.3)}
+
+/* 朝代左右滑动选择 */
+.era-slider-wrap{width:100%;max-width:700px;margin-bottom:24px;position:relative}
+.era-slider{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 2px 12px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.era-slider::-webkit-scrollbar{display:none}
+.era-slide{scroll-snap-align:center;min-width:160px;flex:0 0 160px;background:rgba(255,255,255,.025);border:1px solid rgba(196,151,90,.1);border-radius:10px;padding:18px 14px;text-align:center;cursor:pointer;transition:all .4s ease;position:relative;overflow:hidden}
+.era-slide:hover{background:rgba(255,255,255,.05);border-color:rgba(196,151,90,.25)}
+.era-slide.selected{background:rgba(196,151,90,.08);border-color:rgba(196,151,90,.4);box-shadow:0 0 30px rgba(196,151,90,.08)}
+.era-slide.selected::after{content:"◆";position:absolute;top:8px;right:10px;color:rgba(196,151,90,.5);font-size:6px}
+.era-slide .era-name{font-size:1rem;color:#e8dcc8;margin-bottom:6px;font-weight:400}
+.era-slide.selected .era-name{color:#c4975a}
+.era-slide .era-range{font-size:.7rem;color:rgba(200,180,150,.4);margin-bottom:8px}
+.era-slide .era-count{font-size:.7rem;color:rgba(196,151,90,.5)}
+.era-nav{display:flex;justify-content:center;gap:30px;margin-top:4px}
+.era-nav-btn{background:rgba(255,255,255,.04);color:rgba(196,151,90,.6);border:1px solid rgba(196,151,90,.15);border-radius:50%;width:32px;height:32px;font-size:1rem;cursor:pointer;transition:all .3s ease;display:flex;align-items:center;justify-content:center;font-family:inherit}
+.era-nav-btn:hover{background:rgba(196,151,90,.12);color:#c4975a}
+.era-nav-btn:disabled{opacity:.25;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -254,7 +275,11 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
     <div class="stat-item"><div class="label">累计答题</div><div class="value" id="totalAnswered">0</div></div>
   </div>
   <div class="title-bar" id="titleBar"><span class="title-label">当前称号</span><span class="title-name" id="titleName">乡野书生</span><div class="title-progress-wrap"><div class="title-progress" id="titleProgress"></div></div><span class="title-next" id="titleNext"></span></div>
-  <div class="era-select-section"><h3>选 择 答 题 时 代</h3><div class="era-grid" id="eraGrid"></div></div>
+  <div class="era-slider-wrap">
+    <h3 style="color:#c4975a;font-size:.9rem;letter-spacing:.3em;margin-bottom:14px;text-align:center;font-weight:400">选 择 答 题 时 代</h3>
+    <div class="era-slider" id="eraSlider"></div>
+    <div class="era-nav"><button class="era-nav-btn" id="eraPrev" onclick="scrollEra(-1)">◂</button><button class="era-nav-btn" id="eraNext" onclick="scrollEra(1)">▸</button></div>
+  </div>
   <div class="era-select-section"><h3>选 择 难 度</h3><div class="diff-grid" id="diffGrid"></div></div>
   <div class="game-info"><h3>游 戏 规 则</h3><ul>
     <li>选择时代与难度，开始历史知识问答</li>
@@ -272,6 +297,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
     <div class="status-item"><span>得分</span><span class="num" id="currentScore">0</span></div>
     <div class="status-item"><span>连击</span><span class="num" id="currentCombo">0</span></div>
     <div class="status-item lives"><span>❤</span><span class="num" id="livesCount">10</span></div>
+    <button class="home-btn" id="homeBtn" onclick="confirmQuit()">返回</button>
   </div>
   <div class="timer-row"><div class="timer-bar" id="timerBar"></div><span class="timer-text" id="timerText">20</span></div>
   <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
@@ -333,19 +359,30 @@ const TITLES=[
   {n:600,name:'进士'},{n:1000,name:'翰林'},{n:1500,name:'太傅'},{n:2000,name:'帝师'}
 ];
 
-function initEraGrid(){
-  const grid=document.getElementById('eraGrid');
+function initEraSlider(){
+  const slider=document.getElementById('eraSlider');
   ERAS.forEach(era=>{
     const card=document.createElement('div');
-    card.className='era-card'+(era.id==='all'?' selected':'');
+    card.className='era-slide'+(era.id==='all'?' selected':'');
     card.dataset.era=era.id;
     const count=era.id==='all'?'全部':allQuestions.filter(q=>q.ei===era.id).length;
     card.innerHTML='<div class="era-name">'+era.icon+' '+era.name+'</div><div class="era-range">'+era.range+'</div><div class="era-count">'+count+' 题</div>';
     card.onclick=()=>selectEra(era.id);
-    grid.appendChild(card);
+    slider.appendChild(card);
   });
+  slider.addEventListener('scroll',updateEraNav);
+  updateEraNav();
 }
-function selectEra(id){selectedEra=id;document.querySelectorAll('.era-card').forEach(c=>c.classList.toggle('selected',c.dataset.era===id));}
+function selectEra(id){selectedEra=id;document.querySelectorAll('.era-slide').forEach(c=>c.classList.toggle('selected',c.dataset.era===id));}
+function scrollEra(dir){
+  const slider=document.getElementById('eraSlider');
+  slider.scrollBy({left:dir*180,behavior:'smooth'});
+}
+function updateEraNav(){
+  const slider=document.getElementById('eraSlider');
+  document.getElementById('eraPrev').disabled=slider.scrollLeft<=5;
+  document.getElementById('eraNext').disabled=slider.scrollLeft>=slider.scrollWidth-slider.clientWidth-5;
+}
 
 function initDiffGrid(){
   const grid=document.getElementById('diffGrid');
@@ -361,10 +398,33 @@ function initDiffGrid(){
 }
 function selectDiff(k){selectedDiff=k;document.querySelectorAll('.diff-card').forEach(c=>c.classList.toggle('selected',c.dataset.diff===k));}
 
+function confirmQuit(){
+  stopTimer();
+  if(GS.total>0){
+    if(!confirm('当前进度将不会保存，确定返回首页吗？'))return;
+  }
+  showPage('startPage');
+}
+
 const GS={questions:[],currentIdx:0,score:0,combo:0,maxCombo:0,lives:10,correct:0,total:0,answering:false,timeLeft:0,timer:null,tools:{fifty:0,skip:0,hint:0},diff:'normal',fiftyUsed:false,hintUsed:false};
 
-function loadStats(){try{const s=JSON.parse(localStorage.getItem('hqStats')||'{}');return{bs:s.bs||0,bc:s.bc||0,ta:s.ta||0,title:s.title||0}}catch(e){return{bs:0,bc:0,ta:0,title:0}}}
-function saveStats(s){try{localStorage.setItem('hqStats',JSON.stringify(s))}catch(e){}}
+// 健壮的 localStorage：兼容隐私模式、iframe 等场景
+let _lsOk=true;
+function loadStats(){
+  if(!_lsOk)return{bs:0,bc:0,ta:0,title:0};
+  try{
+    const raw=localStorage.getItem('hqStats');
+    if(!raw)return{bs:0,bc:0,ta:0,title:0};
+    const s=JSON.parse(raw);
+    return{bs:parseInt(s.bs,10)||0,bc:parseInt(s.bc,10)||0,ta:parseInt(s.ta,10)||0,title:parseInt(s.title,10)||0};
+  }catch(e){_lsOk=false;return{bs:0,bc:0,ta:0,title:0};}
+}
+function saveStats(s){
+  if(!_lsOk)return;
+  try{localStorage.setItem('hqStats',JSON.stringify(s));}catch(e){_lsOk=false;}
+}
+// 初始化时测试 localStorage 可用性
+try{const _t='__hq_test__';localStorage.setItem(_t,'1');localStorage.removeItem(_t);}catch(e){_lsOk=false;}
 
 function getTitleIdx(total){
   let idx=0;
@@ -2439,7 +2499,7 @@ const allQuestions=[
 ];
 
 // 初始化
-initEraGrid();
+initEraSlider();
 initDiffGrid();
 updateStartStats();
 
