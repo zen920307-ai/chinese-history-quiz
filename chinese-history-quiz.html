@@ -115,9 +115,9 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .modal-box .modal-btn-confirm:hover{transform:translateY(-1px);box-shadow:0 5px 20px rgba(0,0,0,.4),0 0 12px rgba(196,151,90,.06)}
 
 /* ===== 答题页 ===== */
-#quizPage{justify-content:center;padding-top:10px;overflow:hidden;height:100vh;overscroll-behavior:none}
+#quizPage{justify-content:flex-start;padding-top:10px;overflow:hidden;height:100vh;overscroll-behavior:none}
 #quizPage.scrollable{overflow-y:auto}
-.quiz-inner{width:100%;max-width:720px;display:flex;flex-direction:column;align-items:center;max-height:calc(100vh - 80px);overflow:hidden;gap:4px;padding:0 4px}
+.quiz-inner{width:100%;max-width:720px;display:flex;flex-direction:column;align-items:center;height:calc(100vh - 90px);overflow:hidden;gap:6px;padding:0 4px;flex-shrink:0}
 .top-bar{width:100%;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;flex-wrap:wrap;gap:6px;padding:0 2px}
 .status-item{display:flex;align-items:center;gap:5px;font-size:.78rem;color:rgba(196,151,90,.4)}
 .status-item .num{color:#d4a860;font-weight:700;font-size:.95rem;font-variant-numeric:tabular-nums}
@@ -126,16 +126,16 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .home-btn{background:rgba(196,151,90,.04);color:rgba(196,151,90,0.45);border:1px solid rgba(196,151,90,.12);border-radius:5px;padding:4px 10px;font-size:.72rem;font-family:inherit;cursor:pointer;transition:all .3s ease;letter-spacing:.08em;flex-shrink:0}
 .home-btn:hover{background:rgba(196,151,90,.1);color:#c4975a;border-color:rgba(196,151,90,.25)}
 
-.timer-row{width:100%;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.timer-row{width:100%;display:flex;align-items:center;gap:8px;flex-shrink:0;margin-top:4px}
 .timer-bar{flex:1;height:4px;background:rgba(196,151,90,.06);border-radius:2px;overflow:hidden;position:relative}
 .timer-bar .timer-fill{height:100%;border-radius:2px;transition:width .3s linear;width:100%}
 @keyframes timerPulse{from{opacity:.7}to{opacity:1}}
 .timer-text{font-size:.75rem;color:#c4975a;font-weight:600;min-width:24px;text-align:right;font-variant-numeric:tabular-nums}
 
-.progress-wrap{width:100%;height:2px;background:rgba(196,151,90,.06);border-radius:2px;overflow:hidden;flex-shrink:0}
+.progress-wrap{width:100%;height:2px;background:rgba(196,151,90,.06);border-radius:2px;overflow:hidden;flex-shrink:0;margin-bottom:2px}
 .progress-bar{height:100%;width:0;background:linear-gradient(90deg,#5a3a1c,#c4975a);border-radius:1px;transition:width .6s cubic-bezier(.4,0,.2,1)}
 
-.tools-row{width:100%;display:flex;gap:8px;flex-shrink:0}
+.tools-row{width:100%;display:flex;gap:8px;flex-shrink:0;margin-bottom:2px}
 .tool-btn{flex:1;background:rgba(196,151,90,.03);border:1px solid rgba(196,151,90,.08);border-radius:6px;padding:6px 6px;color:#c4975a;font-family:inherit;cursor:pointer;transition:all .25s ease;display:flex;align-items:center;justify-content:center;gap:5px;position:relative;font-size:.8rem}
 .tool-btn:hover:not(:disabled){background:rgba(196,151,90,.1);border-color:rgba(196,151,90,.3);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.25)}
 .tool-btn:active:not(:disabled){transform:translateY(0) scale(.97)}
@@ -144,23 +144,23 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .tool-btn .tool-count{background:rgba(196,151,90,.12);color:#d4a860;font-size:.65rem;font-weight:700;border-radius:8px;padding:1px 6px;min-width:16px;text-align:center}
 
 /* 题目卡 - 视觉突出 */
-.question-card{width:100%;flex:0 0 auto;background:linear-gradient(135deg,rgba(196,151,90,.07),rgba(196,151,90,.02));border:1px solid rgba(196,151,90,.18);border-radius:10px;padding:18px 24px;animation:cardIn .5s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;box-shadow:0 3px 16px rgba(0,0,0,.25),inset 0 1px 0 rgba(196,151,90,.08)}
-.question-card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 10%,rgba(196,151,90,.18) 50%,transparent 90%)}
-.question-card::after{content:"";position:absolute;top:0;left:0;bottom:0;width:3px;background:linear-gradient(180deg,rgba(196,151,90,.25),rgba(196,151,90,.08));border-radius:0 2px 2px 0}
+.question-card{width:100%;flex-shrink:0;background:linear-gradient(160deg,rgba(196,151,90,.1),rgba(196,151,90,.03));border:1px solid rgba(196,151,90,.22);border-radius:10px;padding:24px 28px;margin:4px 0;animation:cardIn .5s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.3),inset 0 1px 0 rgba(196,151,90,.1)}
+.question-card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 10%,rgba(196,151,90,.2) 50%,transparent 90%)}
+.question-card::after{content:"";position:absolute;top:0;left:0;bottom:0;width:4px;background:linear-gradient(180deg,rgba(196,151,90,.35),rgba(196,151,90,.1));border-radius:0 2px 2px 0}
 @keyframes cardIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
 /* 题目卡进入弹跳效果 */
 .question-card.bounce-in{animation:cardBounceIn .5s cubic-bezier(.34,1.56,.64,1)}
 @keyframes cardBounceIn{0%{opacity:0;transform:translateY(30px) scale(.96)}100%{opacity:1;transform:translateY(0) scale(1)}}
 
-.era-tag{display:inline-block;background:rgba(196,151,90,.1);color:#d4a860;padding:3px 12px;border-radius:16px;font-size:.68rem;letter-spacing:.12em;margin-bottom:10px;border:1px solid rgba(196,151,90,.15);font-weight:600}
-.question-text{font-size:clamp(.95rem,2.8vw,1.15rem);line-height:1.8;color:#d4a860;font-weight:600;letter-spacing:.06em;text-shadow:0 1px 4px rgba(0,0,0,.15)}
+.era-tag{display:inline-block;background:rgba(196,151,90,.12);color:#d4a860;padding:4px 14px;border-radius:16px;font-size:.7rem;letter-spacing:.12em;margin-bottom:12px;border:1px solid rgba(196,151,90,.18);font-weight:600}
+.question-text{font-size:clamp(1rem,3vw,1.2rem);line-height:1.9;color:#d4a860;font-weight:600;letter-spacing:.06em;text-shadow:0 1px 4px rgba(0,0,0,.15);padding:0 2px}
 
-.hint-text{margin-top:8px;padding:6px 12px;background:rgba(196,151,90,.06);border-left:2px solid rgba(196,151,90,.25);color:rgba(196,151,90,.55);font-size:.8rem;border-radius:0 4px 4px 0;letter-spacing:.04em}
+.hint-text{margin-top:10px;padding:8px 14px;background:rgba(196,151,90,.06);border-left:2px solid rgba(196,151,90,.25);color:rgba(196,151,90,.55);font-size:.8rem;border-radius:0 4px 4px 0;letter-spacing:.04em}
 
 /* 选项列表 - 更鲜明区分 */
-.options-list{width:100%;display:flex;flex-direction:column;gap:8px;flex:1 1 auto;justify-content:center;min-height:0;padding:2px 0}
-.option-btn{width:100%;background:rgba(196,151,90,.03);border:1px solid rgba(196,151,90,.1);border-radius:8px;padding:12px 16px;color:#c4975a;font-size:.92rem;font-family:"Noto Serif SC",serif;cursor:pointer;transition:all .25s ease;display:flex;align-items:center;gap:12px;text-align:left;position:relative;overflow:hidden}
+.options-list{width:100%;display:flex;flex-direction:column;gap:10px;flex:1 1 auto;min-height:0;padding:4px 0;justify-content:flex-start;overflow-y:auto}
+.option-btn{width:100%;background:rgba(196,151,90,.025);border:1px solid rgba(196,151,90,.1);border-radius:8px;padding:13px 18px;color:#c4975a;font-size:.92rem;font-family:"Noto Serif SC",serif;cursor:pointer;transition:all .25s ease;display:flex;align-items:center;gap:12px;text-align:left;position:relative;overflow:hidden}
 @keyframes optionFadeIn{0%{opacity:0;transform:translateX(-12px)}100%{opacity:1;transform:translateX(0)}}
 .option-btn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,rgba(196,151,90,.06),transparent);transition:width .25s}
 .option-btn:hover:not(.disabled){background:rgba(196,151,90,.07);border-color:rgba(196,151,90,.22);transform:translateX(4px)}
