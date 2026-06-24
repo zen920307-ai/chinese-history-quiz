@@ -8,7 +8,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;400;600;700;900&family=Ma+Shan+Zheng&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 html{font-size:16px;scroll-behavior:smooth}
-body{font-family:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;background:#080604;color:#c4975a;min-height:100vh;overflow-x:hidden;position:relative}
+body{font-family:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;background:#1a1510;color:#c4975a;min-height:100vh;overflow-x:hidden;position:relative}
 
 /* ===== 深色古纸纹理 ===== */
 body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
@@ -42,7 +42,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .dust-particle{position:fixed;width:2px;height:2px;border-radius:50%;background:rgba(180,140,70,.12);pointer-events:none;z-index:0;animation:dustFloat linear infinite}
 @keyframes dustFloat{0%{transform:translateY(100vh) translateX(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-10vh) translateX(100px);opacity:0}}
 
-.page{display:none;flex-direction:column;align-items:center;min-height:100vh;padding:36px 28px 50px;position:relative;z-index:1;background:linear-gradient(180deg,#1a1208,#14100a 30%,#12100a 70%,#0e0c08);color:#c4975a;border-left:14px solid #2a1a0c;border-right:14px solid #2a1a0c;box-shadow:inset 4px 0 14px -4px rgba(0,0,0,.4),inset -4px 0 14px -4px rgba(0,0,0,.4),0 0 80px rgba(0,0,0,.6);max-width:800px;margin:0 auto}
+.page{display:none;flex-direction:column;align-items:center;min-height:100vh;padding:36px 28px 50px;position:relative;z-index:1;background:linear-gradient(180deg,#231c12,#1e1810 30%,#1a1510 70%,#161208);color:#c4975a;border-left:14px solid #2a1a0c;border-right:14px solid #2a1a0c;box-shadow:inset 4px 0 14px -4px rgba(0,0,0,.3),inset -4px 0 14px -4px rgba(0,0,0,.3),0 0 80px rgba(0,0,0,.4);max-width:800px;margin:0 auto}
 #startPage{justify-content:flex-start}
 .page.active{display:flex}
 /* 上下木轴滚条 */
@@ -68,8 +68,8 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 
 .era-select-section{width:100%;max-width:700px;margin-bottom:20px}
 .era-select-section h3{color:#c4975a;font-size:.9rem;letter-spacing:.3em;margin-bottom:8px;text-align:center;font-weight:600}
-.era-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px}
-.era-card{background:rgba(196,151,90,.03);border:1px solid rgba(196,151,90,.08);border-radius:8px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .4s ease;position:relative;overflow:hidden}
+.era-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));grid-auto-rows:1fr;gap:10px}
+.era-card{background:rgba(196,151,90,.03);border:1px solid rgba(196,151,90,.08);border-radius:8px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .4s ease;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .era-card::before{content:"";position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(196,151,90,.06),transparent);opacity:0;transition:opacity .4s}
 .era-card:hover{background:rgba(196,151,90,.08);border-color:rgba(196,151,90,.2);transform:translateY(-2px)}
 .era-card:hover::before{opacity:1}
@@ -103,7 +103,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 /* 自定义确认弹窗 */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:9999;animation:modalFadeIn .25s ease}
 @keyframes modalFadeIn{from{opacity:0}to{opacity:1}}
-.modal-box{background:linear-gradient(160deg,#1a1208,#14100a);border:1px solid rgba(196,151,90,.2);border-radius:14px;padding:32px 28px 24px;max-width:340px;width:85%;text-align:center;animation:modalPopIn .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 12px 48px rgba(0,0,0,.6),0 0 60px rgba(196,151,90,.05)}
+.modal-box{background:linear-gradient(160deg,#231c12,#1e1810);border:1px solid rgba(196,151,90,.2);border-radius:14px;padding:32px 28px 24px;max-width:340px;width:85%;text-align:center;animation:modalPopIn .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 12px 48px rgba(0,0,0,.6),0 0 60px rgba(196,151,90,.05)}
 @keyframes modalPopIn{from{opacity:0;transform:scale(.85) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
 .modal-box .modal-title{font-size:1.1rem;color:#c4975a;font-weight:600;margin-bottom:12px;letter-spacing:.1em}
 .modal-box .modal-msg{color:rgba(196,151,90,.5);font-size:.9rem;line-height:1.7;margin-bottom:24px}
@@ -125,7 +125,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .progress-wrap{width:100%;max-width:720px;height:3px;background:rgba(196,151,90,.08);border-radius:2px;margin-bottom:28px;overflow:hidden}
 .progress-bar{height:100%;width:0;background:linear-gradient(90deg,#5a3a1c,#c4975a);border-radius:1px;transition:width .6s cubic-bezier(.4,0,.2,1)}
 
-.question-card{width:100%;max-width:720px;background:rgba(196,151,90,.04);border:1px solid rgba(196,151,90,.1);border-radius:12px;padding:30px 32px;margin-bottom:22px;animation:cardIn .6s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.25)}
+.question-card{width:100%;max-width:720px;background:rgba(196,151,90,.05);border:1px solid rgba(196,151,90,.12);border-radius:12px;padding:30px 32px;margin-bottom:22px;animation:cardIn .6s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.2)}
 .question-card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 10%,rgba(196,151,90,.12) 50%,transparent 90%)}
 .question-card::after{content:"";position:absolute;bottom:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,rgba(196,151,90,.06),transparent)}
 @keyframes cardIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -213,8 +213,8 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .title-next{font-size:.7rem;color:rgba(196,151,90,.35)}
 
 /* 难度选择 */
-.diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.diff-card{background:rgba(196,151,90,.03);border:1px solid rgba(196,151,90,.08);border-radius:8px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .4s ease;position:relative;overflow:hidden}
+.diff-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:1fr;gap:10px}
+.diff-card{background:rgba(196,151,90,.03);border:1px solid rgba(196,151,90,.08);border-radius:8px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .4s ease;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .diff-card:hover{background:rgba(196,151,90,.07);border-color:rgba(196,151,90,.18);transform:translateY(-2px)}
 .diff-card.selected{background:rgba(196,151,90,.1);border-color:rgba(196,151,90,.3);box-shadow:0 2px 16px rgba(196,151,90,.08)}
 .diff-card .diff-name{font-size:.95rem;color:#c4975a;margin-bottom:5px;font-weight:400}
@@ -256,7 +256,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .era-slider-wrap{width:100%;max-width:700px;margin-bottom:8px;position:relative}
 .era-slider{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 2px 10px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .era-slider::-webkit-scrollbar{display:none}
-.era-slide{scroll-snap-align:center;min-width:140px;flex:0 0 140px;background:rgba(196,151,90,.03);border:1px solid rgba(196,151,90,.08);border-radius:10px;padding:12px 10px;text-align:center;cursor:pointer;transition:all .4s ease;position:relative;overflow:hidden}
+.era-slide{scroll-snap-align:center;min-width:140px;flex:0 0 140px;background:rgba(196,151,90,.03);border:1px solid rgba(196,151,90,.08);border-radius:10px;padding:12px 10px;text-align:center;cursor:pointer;transition:all .4s ease;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .era-slide:hover{background:rgba(196,151,90,.07);border-color:rgba(196,151,90,.18)}
 .era-slide.selected{background:rgba(196,151,90,.1);border-color:rgba(196,151,90,.3);box-shadow:0 2px 16px rgba(196,151,90,.08)}
 .era-slide.selected::after{content:"◆";position:absolute;top:8px;right:10px;color:rgba(196,151,90,.4);font-size:6px}
