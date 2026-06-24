@@ -8,27 +8,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;400;600;700;900&family=Ma+Shan+Zheng&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 html{font-size:16px;scroll-behavior:smooth}
-body{font-family:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;background:#0b0b0f;color:#e8dcc8;min-height:100vh;overflow-x:hidden;position:relative}
+body{font-family:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;background:#2a1f14;color:#3a2a1a;min-height:100vh;overflow-x:hidden;position:relative}
 
-/* ===== 宣纸质感背景 ===== */
+/* ===== 古纸纹理背景 ===== */
 body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
   background:
     repeating-linear-gradient(0deg,transparent,transparent 50px,rgba(180,160,120,.015) 50px,rgba(180,160,120,.015) 51px),
     repeating-linear-gradient(90deg,transparent,transparent 80px,rgba(180,160,120,.01) 80px,rgba(180,160,120,.01) 81px),
-    radial-gradient(ellipse at 20% 20%,rgba(139,90,43,.06) 0%,transparent 60%),
-    radial-gradient(ellipse at 80% 80%,rgba(100,60,20,.05) 0%,transparent 60%),
-    radial-gradient(ellipse at 50% 50%,rgba(60,40,20,.08) 0%,transparent 70%);
+    radial-gradient(ellipse at 20% 20%,rgba(139,90,43,.04) 0%,transparent 60%),
+    radial-gradient(ellipse at 80% 80%,rgba(100,60,20,.03) 0%,transparent 60%),
+    radial-gradient(ellipse at 50% 50%,rgba(60,40,20,.05) 0%,transparent 70%);
   pointer-events:none;z-index:0}
 
 /* 水墨晕染装饰 */
-.ink-wash{position:fixed;pointer-events:none;z-index:0;border-radius:50%;filter:blur(80px);opacity:.35}
-.ink-wash.a{width:500px;height:400px;top:-150px;left:-100px;background:radial-gradient(circle,rgba(60,30,10,.8),transparent 70%);animation:inkFloat 20s ease-in-out infinite alternate}
-.ink-wash.b{width:600px;height:500px;bottom:-200px;right:-150px;background:radial-gradient(circle,rgba(40,25,10,.7),transparent 70%);animation:inkFloat 25s ease-in-out infinite alternate-reverse}
-.ink-wash.c{width:300px;height:300px;top:40%;left:60%;background:radial-gradient(circle,rgba(80,50,20,.3),transparent 70%);animation:inkFloat 18s ease-in-out infinite alternate}
+.ink-wash{position:fixed;pointer-events:none;z-index:0;border-radius:50%;filter:blur(80px);opacity:.18}
+.ink-wash.a{width:500px;height:400px;top:-150px;left:-100px;background:radial-gradient(circle,rgba(80,50,20,.5),transparent 70%);animation:inkFloat 20s ease-in-out infinite alternate}
+.ink-wash.b{width:600px;height:500px;bottom:-200px;right:-150px;background:radial-gradient(circle,rgba(60,40,15,.4),transparent 70%);animation:inkFloat 25s ease-in-out infinite alternate-reverse}
+.ink-wash.c{width:300px;height:300px;top:40%;left:60%;background:radial-gradient(circle,rgba(100,65,25,.2),transparent 70%);animation:inkFloat 18s ease-in-out infinite alternate}
 @keyframes inkFloat{0%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-20px) scale(1.05)}100%{transform:translate(-20px,30px) scale(.95)}}
 
 /* 浮动古文字装饰 */
-.floating-text{position:fixed;pointer-events:none;z-index:0;font-family:"Ma Shan Zheng",cursive;color:rgba(160,120,60,.04);font-size:4rem;user-select:none}
+.floating-text{position:fixed;pointer-events:none;z-index:0;font-family:"Ma Shan Zheng",cursive;color:rgba(200,170,110,.04);font-size:4rem;user-select:none}
 .floating-text:nth-child(1){top:10%;left:5%;animation:floatDrift1 30s linear infinite}
 .floating-text:nth-child(2){top:25%;right:8%;font-size:3rem;animation:floatDrift2 25s linear infinite}
 .floating-text:nth-child(3){top:60%;left:3%;font-size:5rem;animation:floatDrift3 35s linear infinite}
@@ -39,49 +39,51 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 @keyframes floatDrift3{0%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-10px) rotate(4deg)}100%{transform:translateY(0) rotate(0deg)}}
 
 /* 粒子灰尘效果 */
-.dust-particle{position:fixed;width:2px;height:2px;border-radius:50%;background:rgba(180,150,100,.15);pointer-events:none;z-index:0;animation:dustFloat linear infinite}
+.dust-particle{position:fixed;width:2px;height:2px;border-radius:50%;background:rgba(200,170,110,.1);pointer-events:none;z-index:0;animation:dustFloat linear infinite}
 @keyframes dustFloat{0%{transform:translateY(100vh) translateX(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-10vh) translateX(100px);opacity:0}}
 
-.page{display:none;flex-direction:column;align-items:center;min-height:100vh;padding:20px 16px 40px;position:relative;z-index:1}
+.page{display:none;flex-direction:column;align-items:center;min-height:100vh;padding:36px 28px 50px;position:relative;z-index:1;background:#f5ecd7;color:#3a2a1a;border-left:12px solid #5a3520;border-right:12px solid #5a3520;box-shadow:inset 4px 0 10px -4px rgba(0,0,0,.1),inset -4px 0 10px -4px rgba(0,0,0,.1),0 0 60px rgba(0,0,0,.4);max-width:800px;margin:0 auto}
 #startPage{justify-content:flex-start}
 .page.active{display:flex}
+.page::before{content:"";position:absolute;top:-10px;left:-12px;right:-12px;height:14px;background:linear-gradient(180deg,#2a1508,#4a2a14,#8b6540,#4a2a14,#2a1508);border-radius:7px 7px 0 0;box-shadow:0 3px 10px rgba(0,0,0,.35);z-index:3}
+.page::after{content:"";position:absolute;bottom:-10px;left:-12px;right:-12px;height:14px;background:linear-gradient(180deg,#2a1508,#4a2a14,#8b6540,#4a2a14,#2a1508);border-radius:0 0 7px 7px;box-shadow:0 -3px 10px rgba(0,0,0,.35);z-index:3}
 
 /* ===== 首页 ===== */
 #startPage .title-group{text-align:center;margin-bottom:8px;position:relative}
-#startPage h1{font-family:"Ma Shan Zheng","Noto Serif SC",cursive;font-size:clamp(2.2rem,6.5vw,4rem);font-weight:400;letter-spacing:.2em;color:#c4975a;text-shadow:0 2px 8px rgba(0,0,0,.6),0 0 60px rgba(196,151,90,.15);margin-bottom:8px;line-height:1.3;
-  background:linear-gradient(180deg,#d4b483 0%,#a67c52 40%,#8b6540 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-#startPage .subtitle{font-size:clamp(.85rem,2.5vw,1.05rem);color:rgba(200,180,150,.5);letter-spacing:.5em;font-weight:200}
+#startPage .title-group::after{content:"博古";position:absolute;top:12px;right:20px;font-family:"Ma Shan Zheng",cursive;font-size:1.1rem;color:#c23b22;border:2px solid #c23b22;border-radius:4px;padding:4px 3px;transform:rotate(-5deg);opacity:.7;line-height:1.1;writing-mode:vertical-rl;letter-spacing:.1em}
+#startPage h1{font-family:"Ma Shan Zheng","Noto Serif SC",cursive;font-size:clamp(2.2rem,6.5vw,4rem);font-weight:400;letter-spacing:.2em;color:#6b3410;margin-bottom:8px;line-height:1.3}
+#startPage .subtitle{font-size:clamp(.85rem,2.5vw,1.05rem);color:rgba(80,55,30,.45);letter-spacing:.5em;font-weight:200}
 
 /* 古风分隔线 */
-.divider{width:240px;height:1px;margin:8px auto;position:relative;display:flex;align-items:center;justify-content:center;gap:12px}
-.divider::before,.divider::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(196,151,90,.3),transparent)}
-.divider .diamond{color:rgba(196,151,90,.35);font-size:8px}
+.divider{width:280px;height:2px;margin:8px auto;position:relative;display:flex;align-items:center;justify-content:center;gap:14px}
+.divider::before,.divider::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,transparent,rgba(139,69,19,.25),rgba(139,69,19,.4),rgba(139,69,19,.25),transparent)}
+.divider .diamond{color:rgba(139,69,19,.45);font-size:9px}
 
 .stats-bar{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;justify-content:center}
-.stat-item{background:rgba(255,255,255,.03);border:1px solid rgba(196,151,90,.1);border-radius:6px;padding:8px 14px;text-align:center;min-width:80px;position:relative;overflow:hidden}
-.stat-item::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(196,151,90,.2),transparent)}
-.stat-item .label{font-size:.7rem;color:rgba(200,180,150,.4);letter-spacing:.15em;margin-bottom:4px}
-.stat-item .value{font-size:1.4rem;color:#c4975a;font-weight:700;font-family:"Noto Serif SC",serif}
+.stat-item{background:rgba(139,69,19,.04);border:1px solid rgba(139,69,19,.12);border-radius:6px;padding:8px 14px;text-align:center;min-width:80px;position:relative;overflow:hidden}
+.stat-item::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(139,69,19,.15),transparent)}
+.stat-item .label{font-size:.7rem;color:rgba(80,55,30,.4);letter-spacing:.15em;margin-bottom:4px}
+.stat-item .value{font-size:1.4rem;color:#8b4513;font-weight:700;font-family:"Noto Serif SC",serif}
 
 .era-select-section{width:100%;max-width:700px;margin-bottom:20px}
-.era-select-section h3{color:#c4975a;font-size:.9rem;letter-spacing:.3em;margin-bottom:6px;text-align:center;font-weight:400}
+.era-select-section h3{color:#8b4513;font-size:.9rem;letter-spacing:.3em;margin-bottom:6px;text-align:center;font-weight:600}
 .era-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px}
-.era-card{background:rgba(255,255,255,.025);border:1px solid rgba(196,151,90,.1);border-radius:8px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .4s ease;position:relative;overflow:hidden}
-.era-card::before{content:"";position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(196,151,90,.03),transparent);opacity:0;transition:opacity .4s}
-.era-card:hover{background:rgba(255,255,255,.05);border-color:rgba(196,151,90,.25);transform:translateY(-2px)}
+.era-card{background:rgba(139,69,19,.03);border:1px solid rgba(139,69,19,.1);border-radius:8px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .4s ease;position:relative;overflow:hidden}
+.era-card::before{content:"";position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(196,151,90,.06),transparent);opacity:0;transition:opacity .4s}
+.era-card:hover{background:rgba(196,151,90,.08);border-color:rgba(139,69,19,.2);transform:translateY(-2px)}
 .era-card:hover::before{opacity:1}
-.era-card.selected{background:rgba(196,151,90,.08);border-color:rgba(196,151,90,.4);box-shadow:0 0 30px rgba(196,151,90,.08)}
-.era-card.selected::after{content:"◆";position:absolute;top:7px;right:9px;color:rgba(196,151,90,.5);font-size:6px}
-.era-card .era-name{font-size:.9rem;color:#e8dcc8;margin-bottom:5px;font-weight:400}
-.era-card .era-range{font-size:.68rem;color:rgba(200,180,150,.35);letter-spacing:.05em}
-.era-card .era-count{font-size:.68rem;color:rgba(196,151,90,.5);margin-top:7px}
+.era-card.selected{background:rgba(139,69,19,.08);border-color:rgba(139,69,19,.3);box-shadow:0 2px 12px rgba(139,69,19,.1)}
+.era-card.selected::after{content:"◆";position:absolute;top:7px;right:9px;color:rgba(139,69,19,.4);font-size:6px}
+.era-card .era-name{font-size:.9rem;color:#3a2a1a;margin-bottom:5px;font-weight:400}
+.era-card .era-range{font-size:.68rem;color:rgba(80,55,30,.4);letter-spacing:.05em}
+.era-card .era-count{font-size:.68rem;color:rgba(139,69,19,.55);margin-top:7px}
 
-.game-info{background:rgba(255,255,255,.025);border:1px solid rgba(196,151,90,.08);border-radius:10px;padding:22px 30px;margin-bottom:28px;margin-top:28px;max-width:520px;width:100%;position:relative}
-.game-info::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(196,151,90,.15),transparent)}
-.game-info h3{color:#c4975a;font-size:.9rem;margin-bottom:16px;letter-spacing:.2em;text-align:center;font-weight:400}
+.game-info{background:rgba(139,69,19,.03);border:1px solid rgba(139,69,19,.1);border-radius:10px;padding:22px 30px;margin-bottom:28px;margin-top:28px;max-width:520px;width:100%;position:relative}
+.game-info::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(139,69,19,.12),transparent)}
+.game-info h3{color:#8b4513;font-size:.9rem;margin-bottom:16px;letter-spacing:.2em;text-align:center;font-weight:600}
 .game-info ul{list-style:none}
-.game-info li{padding:6px 0;color:rgba(200,180,150,.55);font-size:.88rem;padding-left:20px;position:relative;line-height:1.6}
-.game-info li::before{content:"◇";position:absolute;left:0;color:rgba(196,151,90,.4);font-size:8px;top:9px}
+.game-info li{padding:6px 0;color:rgba(80,55,30,.65);font-size:.88rem;padding-left:20px;position:relative;line-height:1.6}
+.game-info li::before{content:"◇";position:absolute;left:0;color:rgba(139,69,19,.4);font-size:8px;top:9px}
 
 /* 按钮 */
 .btn{border:none;cursor:pointer;font-family:"Noto Serif SC",serif;transition:all .4s ease;position:relative;overflow:hidden}
@@ -90,8 +92,8 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(139,69,19,.5);border-color:rgba(196,151,90,.3)}
 .btn-primary:hover::before{left:100%}
 .btn-primary:active{transform:translateY(0)}
-.btn-secondary{background:rgba(255,255,255,.04);color:#e8dcc8;font-size:.95rem;padding:12px 36px;border-radius:6px;letter-spacing:.15em;border:1px solid rgba(196,151,90,.15)}
-.btn-secondary:hover{background:rgba(255,255,255,.08);border-color:rgba(196,151,90,.3)}
+.btn-secondary{background:rgba(139,69,19,.05);color:#6b3410;font-size:.95rem;padding:12px 36px;border-radius:6px;letter-spacing:.15em;border:1px solid rgba(139,69,19,.2)}
+.btn-secondary:hover{background:rgba(139,69,19,.1);border-color:rgba(139,69,19,.35)}
 .btn-next{display:none;background:linear-gradient(135deg,#8b4513,#6b3410);color:#e8dcc8;font-size:.95rem;padding:12px 36px;border-radius:6px;letter-spacing:.2em;font-weight:600;margin-top:16px;box-shadow:0 3px 16px rgba(139,69,19,.25);border:1px solid rgba(196,151,90,.12)}
 .btn-next::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);transition:left .6s}
 .btn-next:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(139,69,19,.4)}
@@ -114,33 +116,33 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 /* ===== 答题页 ===== */
 #quizPage{justify-content:flex-start;padding-top:20px}
 .top-bar{width:100%;max-width:720px;display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px}
-.status-item{display:flex;align-items:center;gap:6px;font-size:.82rem;color:rgba(200,180,150,.5)}
-.status-item .num{color:#c4975a;font-weight:700;font-size:1rem}
-.status-item.lives{color:#8b3a3a}
-.status-item.lives .num{color:#a04040}
+.status-item{display:flex;align-items:center;gap:6px;font-size:.82rem;color:rgba(80,55,30,.55)}
+.status-item .num{color:#8b4513;font-weight:700;font-size:1rem}
+.status-item.lives{color:#b71c1c}
+.status-item.lives .num{color:#b71c1c}
 
-.progress-wrap{width:100%;max-width:720px;height:2px;background:rgba(255,255,255,.04);border-radius:1px;margin-bottom:28px;overflow:hidden}
+.progress-wrap{width:100%;max-width:720px;height:3px;background:rgba(139,69,19,.1);border-radius:2px;margin-bottom:28px;overflow:hidden}
 .progress-bar{height:100%;width:0;background:linear-gradient(90deg,#8b4513,#c4975a);border-radius:1px;transition:width .6s cubic-bezier(.4,0,.2,1)}
 
-.question-card{width:100%;max-width:720px;background:rgba(255,255,255,.03);backdrop-filter:blur(12px);border:1px solid rgba(196,151,90,.1);border-radius:12px;padding:30px 32px;margin-bottom:22px;animation:cardIn .6s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
-.question-card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 10%,rgba(196,151,90,.15) 50%,transparent 90%)}
-.question-card::after{content:"";position:absolute;bottom:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,rgba(196,151,90,.08),transparent)}
+.question-card{width:100%;max-width:720px;background:rgba(255,252,242,.7);border:1px solid rgba(139,69,19,.12);border-radius:12px;padding:30px 32px;margin-bottom:22px;animation:cardIn .6s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(139,69,19,.06)}
+.question-card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 10%,rgba(139,69,19,.12) 50%,transparent 90%)}
+.question-card::after{content:"";position:absolute;bottom:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,rgba(139,69,19,.06),transparent)}
 @keyframes cardIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 
-.era-tag{display:inline-block;background:rgba(196,151,90,.08);color:#c4975a;padding:4px 14px;border-radius:20px;font-size:.72rem;letter-spacing:.15em;margin-bottom:18px;border:1px solid rgba(196,151,90,.12)}
-.question-text{font-size:clamp(1.05rem,3vw,1.25rem);line-height:1.9;color:#e8dcc8;font-weight:400;letter-spacing:.05em}
+.era-tag{display:inline-block;background:rgba(139,69,19,.06);color:#8b4513;padding:4px 14px;border-radius:20px;font-size:.72rem;letter-spacing:.15em;margin-bottom:18px;border:1px solid rgba(139,69,19,.12)}
+.question-text{font-size:clamp(1.05rem,3vw,1.25rem);line-height:1.9;color:#3a2a1a;font-weight:400;letter-spacing:.05em}
 
 .options-list{width:100%;max-width:720px;display:flex;flex-direction:column;gap:11px}
-.option-btn{width:100%;background:rgba(255,255,255,.025);border:1px solid rgba(196,151,90,.08);border-radius:10px;padding:15px 20px;color:#e8dcc8;font-size:.98rem;font-family:"Noto Serif SC",serif;cursor:pointer;transition:all .35s ease;display:flex;align-items:center;gap:14px;text-align:left;position:relative;overflow:hidden}
-.option-btn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,rgba(196,151,90,.06),transparent);transition:width .35s}
-.option-btn:hover:not(.disabled){background:rgba(255,255,255,.05);border-color:rgba(196,151,90,.2);transform:translateX(6px)}
+.option-btn{width:100%;background:rgba(139,69,19,.03);border:1px solid rgba(139,69,19,.1);border-radius:10px;padding:15px 20px;color:#3a2a1a;font-size:.98rem;font-family:"Noto Serif SC",serif;cursor:pointer;transition:all .35s ease;display:flex;align-items:center;gap:14px;text-align:left;position:relative;overflow:hidden}
+.option-btn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,rgba(196,151,90,.08),transparent);transition:width .35s}
+.option-btn:hover:not(.disabled){background:rgba(196,151,90,.08);border-color:rgba(139,69,19,.2);transform:translateX(6px)}
 .option-btn:hover:not(.disabled)::before{width:100%}
-.option-btn .option-letter{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:rgba(196,151,90,.06);color:#c4975a;font-weight:600;font-size:.82rem;flex-shrink:0;transition:all .35s;border:1px solid rgba(196,151,90,.1)}
-.option-btn:hover:not(.disabled) .option-letter{background:rgba(196,151,90,.15);border-color:rgba(196,151,90,.25)}
-.option-btn.correct{background:rgba(80,140,80,.1)!important;border-color:rgba(100,160,100,.35)!important}
-.option-btn.correct .option-letter{background:rgba(80,140,80,.3)!important;color:#a8d4a0!important;border-color:rgba(100,160,100,.4)!important}
-.option-btn.wrong{background:rgba(160,60,40,.12)!important;border-color:rgba(180,80,60,.35)!important}
-.option-btn.wrong .option-letter{background:rgba(160,60,40,.3)!important;color:#e0a0a0!important;border-color:rgba(180,80,60,.4)!important}
+.option-btn .option-letter{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:rgba(139,69,19,.06);color:#8b4513;font-weight:600;font-size:.82rem;flex-shrink:0;transition:all .35s;border:1px solid rgba(139,69,19,.12)}
+.option-btn:hover:not(.disabled) .option-letter{background:rgba(139,69,19,.12);border-color:rgba(139,69,19,.25)}
+.option-btn.correct{background:rgba(46,125,50,.1)!important;border-color:rgba(46,125,50,.3)!important}
+.option-btn.correct .option-letter{background:rgba(46,125,50,.2)!important;color:#2e7d32!important;border-color:rgba(46,125,50,.35)!important}
+.option-btn.wrong{background:rgba(183,28,28,.08)!important;border-color:rgba(183,28,28,.25)!important}
+.option-btn.wrong .option-letter{background:rgba(183,28,28,.15)!important;color:#b71c1c!important;border-color:rgba(183,28,28,.3)!important}
 .option-btn.disabled{cursor:default;opacity:.6}
 .option-btn.disabled:not(.correct):not(.wrong){opacity:.3}
 
@@ -148,30 +150,30 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .feedback{width:100%;max-width:720px;margin-top:18px;padding:18px 24px;border-radius:10px;display:none;animation:feedbackIn .5s ease}
 @keyframes feedbackIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .feedback.show{display:block}
-.feedback.correct-fb{background:rgba(80,140,80,.06);border:1px solid rgba(100,160,100,.15)}
-.feedback.wrong-fb{background:rgba(160,60,40,.06);border:1px solid rgba(180,80,60,.15)}
+.feedback.correct-fb{background:rgba(46,125,50,.06);border:1px solid rgba(46,125,50,.12)}
+.feedback.wrong-fb{background:rgba(183,28,28,.05);border:1px solid rgba(183,28,28,.12)}
 .feedback .fb-title{font-size:1rem;font-weight:600;margin-bottom:8px;letter-spacing:.1em}
-.feedback.correct-fb .fb-title{color:#a8d4a0}
-.feedback.wrong-fb .fb-title{color:#e0a0a0}
-.feedback .fb-tip{color:rgba(200,180,150,.65);font-size:.9rem;line-height:1.8}
+.feedback.correct-fb .fb-title{color:#2e7d32}
+.feedback.wrong-fb .fb-title{color:#b71c1c}
+.feedback .fb-tip{color:rgba(80,55,30,.65);font-size:.9rem;line-height:1.8}
 
 /* ===== 结算页 ===== */
-#endPage .end-card{background:rgba(255,255,255,.03);backdrop-filter:blur(12px);border:1px solid rgba(196,151,90,.1);border-radius:14px;padding:40px;text-align:center;max-width:520px;width:100%;animation:cardIn .7s ease;position:relative;overflow:hidden}
-#endPage .end-card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 10%,rgba(196,151,90,.15) 50%,transparent 90%)}
-#endPage h2{font-family:"Ma Shan Zheng","Noto Serif SC",cursive;font-size:2.2rem;color:#c4975a;margin-bottom:8px;letter-spacing:.15em}
-#endPage .end-subtitle{color:rgba(200,180,150,.4);margin-bottom:28px;font-size:.95rem;font-weight:200}
+#endPage .end-card{background:rgba(255,252,242,.7);backdrop-filter:blur(12px);border:1px solid rgba(139,69,19,.12);border-radius:14px;padding:40px;text-align:center;max-width:520px;width:100%;animation:cardIn .7s ease;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(139,69,19,.06)}
+#endPage .end-card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 10%,rgba(139,69,19,.12) 50%,transparent 90%)}
+#endPage h2{font-family:"Ma Shan Zheng","Noto Serif SC",cursive;font-size:2.2rem;color:#6b3410;margin-bottom:8px;letter-spacing:.15em}
+#endPage .end-subtitle{color:rgba(80,55,30,.45);margin-bottom:28px;font-size:.95rem;font-weight:200}
 .end-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}
-.end-stat{background:rgba(255,255,255,.025);border:1px solid rgba(196,151,90,.06);border-radius:8px;padding:16px;position:relative}
-.end-stat::before{content:"";position:absolute;top:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,rgba(196,151,90,.1),transparent)}
-.end-stat .es-label{font-size:.7rem;color:rgba(200,180,150,.4);letter-spacing:.08em;margin-bottom:4px}
-.end-stat .es-value{font-size:1.6rem;font-weight:700;color:#c4975a}
+.end-stat{background:rgba(139,69,19,.03);border:1px solid rgba(139,69,19,.1);border-radius:8px;padding:16px;position:relative}
+.end-stat::before{content:"";position:absolute;top:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,rgba(139,69,19,.1),transparent)}
+.end-stat .es-label{font-size:.7rem;color:rgba(80,55,30,.4);letter-spacing:.08em;margin-bottom:4px}
+.end-stat .es-value{font-size:1.6rem;font-weight:700;color:#8b4513}
 .end-buttons{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 
 /* 连击 */
 .combo-display{position:fixed;top:50%;right:28px;transform:translateY(-50%);text-align:right;pointer-events:none;z-index:10;opacity:0;transition:opacity .4s}
 .combo-display.show{opacity:1}
-.combo-number{font-family:"Ma Shan Zheng",cursive;font-size:3.2rem;color:#c4975a;text-shadow:0 0 30px rgba(196,151,90,.3);line-height:1}
-.combo-text{font-size:.78rem;color:rgba(196,151,90,.5);letter-spacing:.3em}
+.combo-number{font-family:"Ma Shan Zheng",cursive;font-size:3.2rem;color:#8b4513;text-shadow:0 2px 8px rgba(139,69,19,.15);line-height:1}
+.combo-text{font-size:.78rem;color:rgba(139,69,19,.45);letter-spacing:.3em}
 @keyframes comboPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
 .combo-pulse{animation:comboPulse .3s ease}
 
@@ -197,73 +199,73 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 }
 
 ::-webkit-scrollbar{width:5px}
-::-webkit-scrollbar-track{background:rgba(255,255,255,.01)}
-::-webkit-scrollbar-thumb{background:rgba(196,151,90,.15);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:rgba(196,151,90,.3)}
+::-webkit-scrollbar-track{background:rgba(139,69,19,.03)}
+::-webkit-scrollbar-thumb{background:rgba(139,69,19,.2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(139,69,19,.35)}
 
 /* 称号栏 */
-.title-bar{display:flex;align-items:center;gap:12px;width:100%;max-width:520px;margin-bottom:14px;padding:10px 18px;background:rgba(255,255,255,.025);border:1px solid rgba(196,151,90,.08);border-radius:8px;flex-wrap:wrap}
-.title-bar .title-label{font-size:.7rem;color:rgba(200,180,150,.4);letter-spacing:.1em}
-.title-bar .title-name{font-size:.95rem;color:#c4975a;font-weight:600;letter-spacing:.1em}
-.title-progress-wrap{flex:1;min-width:80px;height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden}
+.title-bar{display:flex;align-items:center;gap:12px;width:100%;max-width:520px;margin-bottom:14px;padding:10px 18px;background:rgba(139,69,19,.03);border:1px solid rgba(139,69,19,.1);border-radius:8px;flex-wrap:wrap}
+.title-bar .title-label{font-size:.7rem;color:rgba(80,55,30,.4);letter-spacing:.1em}
+.title-bar .title-name{font-size:.95rem;color:#8b4513;font-weight:600;letter-spacing:.1em}
+.title-progress-wrap{flex:1;min-width:80px;height:3px;background:rgba(139,69,19,.08);border-radius:2px;overflow:hidden}
 .title-progress{height:100%;width:0;background:linear-gradient(90deg,#8b4513,#c4975a);transition:width .6s ease}
-.title-next{font-size:.7rem;color:rgba(200,180,150,.4)}
+.title-next{font-size:.7rem;color:rgba(80,55,30,.4)}
 
 /* 难度选择 */
 .diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.diff-card{background:rgba(255,255,255,.025);border:1px solid rgba(196,151,90,.1);border-radius:8px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .4s ease;position:relative;overflow:hidden}
-.diff-card:hover{background:rgba(255,255,255,.05);border-color:rgba(196,151,90,.25);transform:translateY(-2px)}
-.diff-card.selected{background:rgba(196,151,90,.08);border-color:rgba(196,151,90,.4);box-shadow:0 0 30px rgba(196,151,90,.08)}
-.diff-card .diff-name{font-size:.95rem;color:#e8dcc8;margin-bottom:5px;font-weight:400}
-.diff-card .diff-desc{font-size:.65rem;color:rgba(200,180,150,.4);line-height:1.5}
-.diff-card.selected .diff-name{color:#c4975a}
+.diff-card{background:rgba(139,69,19,.03);border:1px solid rgba(139,69,19,.1);border-radius:8px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .4s ease;position:relative;overflow:hidden}
+.diff-card:hover{background:rgba(196,151,90,.06);border-color:rgba(139,69,19,.2);transform:translateY(-2px)}
+.diff-card.selected{background:rgba(139,69,19,.08);border-color:rgba(139,69,19,.3);box-shadow:0 2px 12px rgba(139,69,19,.08)}
+.diff-card .diff-name{font-size:.95rem;color:#3a2a1a;margin-bottom:5px;font-weight:400}
+.diff-card .diff-desc{font-size:.65rem;color:rgba(80,55,30,.45);line-height:1.5}
+.diff-card.selected .diff-name{color:#8b4513}
 
 /* 计时条 */
 .timer-row{width:100%;max-width:720px;display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.timer-bar{flex:1;height:4px;background:rgba(255,255,255,.04);border-radius:2px;overflow:hidden;position:relative}
+.timer-bar{flex:1;height:4px;background:rgba(139,69,19,.08);border-radius:2px;overflow:hidden;position:relative}
 .timer-bar::after{content:"";position:absolute;left:0;top:0;height:100%;width:100%;background:linear-gradient(90deg,#c4975a,#d4a017);transition:width .95s linear;transform-origin:left}
 .timer-bar.warn::after{background:linear-gradient(90deg,#e67e22,#e74c3c)}
 .timer-bar.danger::after{background:#a04040;animation:timerPulse .5s ease infinite alternate}
 @keyframes timerPulse{from{opacity:.7}to{opacity:1}}
-.timer-text{font-size:.8rem;color:#c4975a;font-weight:600;min-width:28px;text-align:right;font-variant-numeric:tabular-nums}
+.timer-text{font-size:.8rem;color:#8b4513;font-weight:600;min-width:28px;text-align:right;font-variant-numeric:tabular-nums}
 .timer-text.warn{color:#e67e22}
 .timer-text.danger{color:#a04040}
 
 /* 道具栏 */
 .tools-row{width:100%;max-width:720px;display:flex;gap:10px;margin-bottom:20px}
-.tool-btn{flex:1;background:rgba(255,255,255,.03);border:1px solid rgba(196,151,90,.12);border-radius:8px;padding:9px 8px;color:#e8dcc8;font-family:inherit;cursor:pointer;transition:all .3s ease;display:flex;align-items:center;justify-content:center;gap:8px;position:relative}
-.tool-btn:hover:not(:disabled){background:rgba(196,151,90,.08);border-color:rgba(196,151,90,.3);transform:translateY(-2px)}
+.tool-btn{flex:1;background:rgba(139,69,19,.03);border:1px solid rgba(139,69,19,.1);border-radius:8px;padding:9px 8px;color:#3a2a1a;font-family:inherit;cursor:pointer;transition:all .3s ease;display:flex;align-items:center;justify-content:center;gap:8px;position:relative}
+.tool-btn:hover:not(:disabled){background:rgba(196,151,90,.08);border-color:rgba(139,69,19,.25);transform:translateY(-2px)}
 .tool-btn:disabled{opacity:.3;cursor:not-allowed}
-.tool-btn .tool-icon{font-size:1rem;color:#c4975a}
-.tool-btn .tool-name{font-size:.78rem;letter-spacing:.05em}
-.tool-btn .tool-count{background:rgba(196,151,90,.15);color:#c4975a;font-size:.7rem;font-weight:700;border-radius:10px;padding:1px 7px;min-width:18px;text-align:center}
+.tool-btn .tool-icon{font-size:1rem;color:#8b4513}
+.tool-btn .tool-name{font-size:.78rem;letter-spacing:.05em;color:#3a2a1a}
+.tool-btn .tool-count{background:rgba(139,69,19,.1);color:#8b4513;font-size:.7rem;font-weight:700;border-radius:10px;padding:1px 7px;min-width:18px;text-align:center}
 
 /* 提示文字 */
-.hint-text{margin-top:10px;padding:8px 14px;background:rgba(196,151,90,.06);border-left:2px solid rgba(196,151,90,.3);color:rgba(196,151,90,.75);font-size:.85rem;border-radius:0 6px 6px 0;letter-spacing:.05em}
+.hint-text{margin-top:10px;padding:8px 14px;background:rgba(139,69,19,.05);border-left:2px solid rgba(139,69,19,.25);color:rgba(80,55,30,.7);font-size:.85rem;border-radius:0 6px 6px 0;letter-spacing:.05em}
 
 /* 称号解锁提示 */
-.unlock-badge{margin:14px auto 0;padding:8px 18px;background:rgba(196,151,90,.1);border:1px solid rgba(196,151,90,.25);border-radius:20px;color:#c4975a;font-size:.85rem;letter-spacing:.1em;display:none}
+.unlock-badge{margin:14px auto 0;padding:8px 18px;background:rgba(139,69,19,.06);border:1px solid rgba(139,69,19,.2);border-radius:20px;color:#8b4513;font-size:.85rem;letter-spacing:.1em;display:none}
 .unlock-badge.show{display:block;animation:feedbackIn .5s ease}
 
 /* 返回首页按钮 */
-.home-btn{background:rgba(255,255,255,.04);color:rgba(200,180,150,.6);border:1px solid rgba(196,151,90,.15);border-radius:6px;padding:5px 14px;font-size:.78rem;font-family:inherit;cursor:pointer;transition:all .3s ease;letter-spacing:.1em}
-.home-btn:hover{background:rgba(196,151,90,.1);color:#c4975a;border-color:rgba(196,151,90,.3)}
+.home-btn{background:rgba(139,69,19,.04);color:rgba(80,55,30,.55);border:1px solid rgba(139,69,19,.15);border-radius:6px;padding:5px 14px;font-size:.78rem;font-family:inherit;cursor:pointer;transition:all .3s ease;letter-spacing:.1em}
+.home-btn:hover{background:rgba(139,69,19,.1);color:#6b3410;border-color:rgba(139,69,19,.3)}
 
 /* 朝代左右滑动选择 */
 .era-slider-wrap{width:100%;max-width:700px;margin-bottom:8px;position:relative}
 .era-slider{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 2px 10px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .era-slider::-webkit-scrollbar{display:none}
-.era-slide{scroll-snap-align:center;min-width:140px;flex:0 0 140px;background:rgba(255,255,255,.025);border:1px solid rgba(196,151,90,.1);border-radius:10px;padding:12px 10px;text-align:center;cursor:pointer;transition:all .4s ease;position:relative;overflow:hidden}
-.era-slide:hover{background:rgba(255,255,255,.05);border-color:rgba(196,151,90,.25)}
-.era-slide.selected{background:rgba(196,151,90,.08);border-color:rgba(196,151,90,.4);box-shadow:0 0 30px rgba(196,151,90,.08)}
-.era-slide.selected::after{content:"◆";position:absolute;top:8px;right:10px;color:rgba(196,151,90,.5);font-size:6px}
-.era-slide .era-name{font-size:1rem;color:#e8dcc8;margin-bottom:6px;font-weight:400}
-.era-slide.selected .era-name{color:#c4975a}
-.era-slide .era-range{font-size:.7rem;color:rgba(200,180,150,.4);margin-bottom:8px}
-.era-slide .era-count{font-size:.7rem;color:rgba(196,151,90,.5)}
+.era-slide{scroll-snap-align:center;min-width:140px;flex:0 0 140px;background:rgba(139,69,19,.03);border:1px solid rgba(139,69,19,.1);border-radius:10px;padding:12px 10px;text-align:center;cursor:pointer;transition:all .4s ease;position:relative;overflow:hidden}
+.era-slide:hover{background:rgba(196,151,90,.06);border-color:rgba(139,69,19,.2)}
+.era-slide.selected{background:rgba(139,69,19,.08);border-color:rgba(139,69,19,.3);box-shadow:0 2px 12px rgba(139,69,19,.08)}
+.era-slide.selected::after{content:"◆";position:absolute;top:8px;right:10px;color:rgba(139,69,19,.4);font-size:6px}
+.era-slide .era-name{font-size:1rem;color:#3a2a1a;margin-bottom:6px;font-weight:400}
+.era-slide.selected .era-name{color:#8b4513}
+.era-slide .era-range{font-size:.7rem;color:rgba(80,55,30,.4);margin-bottom:8px}
+.era-slide .era-count{font-size:.7rem;color:rgba(139,69,19,.55)}
 .era-nav{display:flex;justify-content:center;gap:30px;margin-top:4px}
-.era-nav-btn{background:rgba(255,255,255,.04);color:rgba(196,151,90,.6);border:1px solid rgba(196,151,90,.15);border-radius:50%;width:32px;height:32px;font-size:1rem;cursor:pointer;transition:all .3s ease;display:flex;align-items:center;justify-content:center;font-family:inherit}
-.era-nav-btn:hover{background:rgba(196,151,90,.12);color:#c4975a}
+.era-nav-btn{background:rgba(139,69,19,.04);color:rgba(80,55,30,.5);border:1px solid rgba(139,69,19,.15);border-radius:50%;width:32px;height:32px;font-size:1rem;cursor:pointer;transition:all .3s ease;display:flex;align-items:center;justify-content:center;font-family:inherit}
+.era-nav-btn:hover{background:rgba(139,69,19,.1);color:#6b3410}
 .era-nav-btn:disabled{opacity:.25;cursor:not-allowed}
 </style>
 </head>
@@ -291,7 +293,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
   </div>
   <div class="title-bar" id="titleBar"><span class="title-label">当前称号</span><span class="title-name" id="titleName">乡野书生</span><div class="title-progress-wrap"><div class="title-progress" id="titleProgress"></div></div><span class="title-next" id="titleNext"></span></div>
   <div class="era-slider-wrap">
-    <h3 style="color:#c4975a;font-size:.9rem;letter-spacing:.3em;margin-bottom:8px;text-align:center;font-weight:400">选 择 答 题 时 代</h3>
+    <h3 style="color:#8b4513;font-size:.9rem;letter-spacing:.3em;margin-bottom:8px;text-align:center;font-weight:600">选 择 答 题 时 代</h3>
     <div class="era-slider" id="eraSlider"></div>
     <div class="era-nav"><button class="era-nav-btn" id="eraPrev" onclick="scrollEra(-1)">◂</button><button class="era-nav-btn" id="eraNext" onclick="scrollEra(1)">▸</button></div>
   </div>
@@ -509,7 +511,7 @@ function updateTimerUI(){
   bar.querySelector('::after');
   bar.style.setProperty('--tw',pct+'%');
   // 用内联样式控制渐变条宽度
-  bar.innerHTML='<i style="display:block;height:100%;width:'+pct+'%;background:'+(GS.timeLeft<=5?'#a04040':GS.timeLeft<=10?'linear-gradient(90deg,#e67e22,#e74c3c)':'linear-gradient(90deg,#c4975a,#d4a017)')+';transition:width .95s linear"></i>';
+  bar.innerHTML='<i style="display:block;height:100%;width:'+pct+'%;background:'+(GS.timeLeft<=5?'#a04040':GS.timeLeft<=10?'linear-gradient(90deg,#e67e22,#e74c3c)':'linear-gradient(90deg,#8b4513,#c4975a)')+';transition:width .95s linear"></i>';
   txt.className='timer-text'+(GS.timeLeft<=5?' danger':GS.timeLeft<=10?' warn':'');
 }
 function stopTimer(){clearInterval(GS.timer);}
@@ -651,7 +653,7 @@ function showFeedback(ok,tip,titleOverride,extra){
   fb.className='feedback show '+(ok?'correct-fb':'wrong-fb');
   document.getElementById('fbTitle').textContent=titleOverride||(ok?'✓ 回答正确':'✗ 回答错误');
   let tipHtml=tip;
-  if(extra)tipHtml+='<div style="margin-top:6px;color:#c4975a;font-size:.82rem">'+extra+'</div>';
+  if(extra)tipHtml+='<div style="margin-top:6px;color:#8b4513;font-size:.82rem">'+extra+'</div>';
   document.getElementById('fbTip').innerHTML=tipHtml;
   // 答对答错都显示继续按钮（答对3秒后自动跳转）
   nextBtn.style.display='inline-block';
