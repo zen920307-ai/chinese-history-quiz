@@ -76,7 +76,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .era-card .era-range{font-size:.68rem;color:rgba(200,180,150,.35);letter-spacing:.05em}
 .era-card .era-count{font-size:.68rem;color:rgba(196,151,90,.5);margin-top:7px}
 
-.game-info{background:rgba(255,255,255,.025);border:1px solid rgba(196,151,90,.08);border-radius:10px;padding:22px 30px;margin-bottom:28px;max-width:520px;width:100%;position:relative}
+.game-info{background:rgba(255,255,255,.025);border:1px solid rgba(196,151,90,.08);border-radius:10px;padding:22px 30px;margin-bottom:28px;margin-top:28px;max-width:520px;width:100%;position:relative}
 .game-info::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(196,151,90,.15),transparent)}
 .game-info h3{color:#c4975a;font-size:.9rem;margin-bottom:16px;letter-spacing:.2em;text-align:center;font-weight:400}
 .game-info ul{list-style:none}
@@ -96,6 +96,20 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .btn-next::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);transition:left .6s}
 .btn-next:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(139,69,19,.4)}
 .btn-next:hover::before{left:100%}
+
+/* 自定义确认弹窗 */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:9999;animation:modalFadeIn .25s ease}
+@keyframes modalFadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{background:linear-gradient(160deg,#1e1810,#2a2018);border:1px solid rgba(196,151,90,.2);border-radius:14px;padding:32px 28px 24px;max-width:340px;width:85%;text-align:center;animation:modalPopIn .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 12px 48px rgba(0,0,0,.5),0 0 60px rgba(196,151,90,.06)}
+@keyframes modalPopIn{from{opacity:0;transform:scale(.85) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-box .modal-title{font-size:1.1rem;color:#c4975a;font-weight:600;margin-bottom:12px;letter-spacing:.1em}
+.modal-box .modal-msg{color:rgba(200,180,150,.6);font-size:.9rem;line-height:1.7;margin-bottom:24px}
+.modal-box .modal-btns{display:flex;gap:12px;justify-content:center}
+.modal-box .modal-btn{border:none;border-radius:6px;padding:10px 28px;font-size:.92rem;font-family:"Noto Serif SC",serif;cursor:pointer;letter-spacing:.12em;transition:all .3s ease;position:relative;overflow:hidden}
+.modal-box .modal-btn-cancel{background:rgba(255,255,255,.05);color:rgba(200,180,150,.6);border:1px solid rgba(196,151,90,.12)}
+.modal-box .modal-btn-cancel:hover{background:rgba(255,255,255,.08);color:#e8dcc8}
+.modal-box .modal-btn-confirm{background:linear-gradient(135deg,#8b4513,#6b3410);color:#e8dcc8;border:1px solid rgba(196,151,90,.15);box-shadow:0 3px 16px rgba(139,69,19,.25)}
+.modal-box .modal-btn-confirm:hover{transform:translateY(-1px);box-shadow:0 5px 20px rgba(139,69,19,.4)}
 
 /* ===== 答题页 ===== */
 #quizPage{justify-content:flex-start;padding-top:20px}
@@ -402,9 +416,19 @@ function selectDiff(k){selectedDiff=k;document.querySelectorAll('.diff-card').fo
 function confirmQuit(){
   stopTimer();
   if(GS.total>0){
-    if(!confirm('当前进度将不会保存，确定返回首页吗？'))return;
+    showModal('确认返回','当前进度将不会保存，确定返回首页吗？',()=>showPage('startPage'));
+  }else{
+    showPage('startPage');
   }
-  showPage('startPage');
+}
+function showModal(title,msg,onConfirm){
+  const overlay=document.createElement('div');
+  overlay.className='modal-overlay';
+  overlay.innerHTML='<div class="modal-box"><div class="modal-title">'+title+'</div><div class="modal-msg">'+msg+'</div><div class="modal-btns"><button class="modal-btn modal-btn-cancel">取 消</button><button class="modal-btn modal-btn-confirm">确 认</button></div></div>';
+  document.body.appendChild(overlay);
+  overlay.querySelector('.modal-btn-cancel').onclick=()=>overlay.remove();
+  overlay.querySelector('.modal-btn-confirm').onclick=()=>{overlay.remove();onConfirm();};
+  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
 }
 
 const GS={questions:[],currentIdx:0,score:0,combo:0,maxCombo:0,lives:10,correct:0,total:0,answering:false,timeLeft:0,timer:null,tools:{fifty:0,skip:0,hint:0},diff:'normal',fiftyUsed:false,hintUsed:false};
