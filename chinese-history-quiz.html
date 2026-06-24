@@ -115,7 +115,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .modal-box .modal-btn-confirm:hover{transform:translateY(-1px);box-shadow:0 5px 20px rgba(0,0,0,.4),0 0 12px rgba(196,151,90,.06)}
 
 /* ===== 答题页 ===== */
-#quizPage{justify-content:center;padding-top:10px;overflow:hidden;height:100vh}
+#quizPage{justify-content:center;padding-top:10px;overflow:hidden;height:100vh;overscroll-behavior:none}
 #quizPage.scrollable{overflow-y:auto}
 .quiz-inner{width:100%;max-width:720px;display:flex;flex-direction:column;align-items:center;max-height:calc(100vh - 80px);overflow:hidden;gap:4px;padding:0 4px}
 .top-bar{width:100%;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;flex-wrap:wrap;gap:6px;padding:0 2px}
@@ -127,10 +127,8 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .home-btn:hover{background:rgba(196,151,90,.1);color:#c4975a;border-color:rgba(196,151,90,.25)}
 
 .timer-row{width:100%;display:flex;align-items:center;gap:8px;flex-shrink:0}
-.timer-bar{flex:1;height:3px;background:rgba(196,151,90,.06);border-radius:2px;overflow:hidden;position:relative}
-.timer-bar::after{content:"";position:absolute;left:0;top:0;height:100%;width:100%;background:linear-gradient(90deg,#c4975a,#d4a017);transition:width .95s linear;transform-origin:left}
-.timer-bar.warn::after{background:linear-gradient(90deg,#e67e22,#e74c3c)}
-.timer-bar.danger::after{background:#a04040;animation:timerPulse .5s ease infinite alternate}
+.timer-bar{flex:1;height:4px;background:rgba(196,151,90,.06);border-radius:2px;overflow:hidden;position:relative}
+.timer-bar .timer-fill{height:100%;border-radius:2px;transition:width .3s linear;width:100%}
 @keyframes timerPulse{from{opacity:.7}to{opacity:1}}
 .timer-text{font-size:.75rem;color:#c4975a;font-weight:600;min-width:24px;text-align:right;font-variant-numeric:tabular-nums}
 
@@ -263,36 +261,11 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .diff-card .diff-desc{font-size:.65rem;color:rgba(196,151,90,.35);line-height:1.5}
 .diff-card.selected .diff-name{color:#d4a860}
 
-/* 计时条 */
-.timer-row{width:100%;max-width:720px;display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.timer-bar{flex:1;height:4px;background:rgba(196,151,90,.06);border-radius:2px;overflow:hidden;position:relative}
-.timer-bar::after{content:"";position:absolute;left:0;top:0;height:100%;width:100%;background:linear-gradient(90deg,#c4975a,#d4a017);transition:width .95s linear;transform-origin:left}
-.timer-bar.warn::after{background:linear-gradient(90deg,#e67e22,#e74c3c)}
-.timer-bar.danger::after{background:#a04040;animation:timerPulse .5s ease infinite alternate}
-@keyframes timerPulse{from{opacity:.7}to{opacity:1}}
-.timer-text{font-size:.8rem;color:#c4975a;font-weight:600;min-width:28px;text-align:right;font-variant-numeric:tabular-nums}
-.timer-text.warn{color:#e67e22}
-.timer-text.danger{color:#ef5350}
 
-/* 道具栏 */
-.tools-row{width:100%;max-width:720px;display:flex;gap:10px;margin-bottom:20px}
-.tool-btn{flex:1;background:rgba(196,151,90,.03);border:1px solid rgba(196,151,90,.1);border-radius:8px;padding:9px 8px;color:#c4975a;font-family:inherit;cursor:pointer;transition:all .3s ease;display:flex;align-items:center;justify-content:center;gap:8px;position:relative}
-.tool-btn:hover:not(:disabled){background:rgba(196,151,90,.08);border-color:rgba(196,151,90,.25);transform:translateY(-2px)}
-.tool-btn:disabled{opacity:.3;cursor:not-allowed}
-.tool-btn .tool-icon{font-size:1rem;color:#d4a860}
-.tool-btn .tool-name{font-size:.78rem;letter-spacing:.05em;color:#c4975a}
-.tool-btn .tool-count{background:rgba(196,151,90,.12);color:#d4a860;font-size:.7rem;font-weight:700;border-radius:10px;padding:1px 7px;min-width:18px;text-align:center}
-
-/* 提示文字 */
-.hint-text{margin-top:10px;padding:8px 14px;background:rgba(196,151,90,.05);border-left:2px solid rgba(196,151,90,.25);color:rgba(196,151,90,.6);font-size:.85rem;border-radius:0 6px 6px 0;letter-spacing:.05em}
 
 /* 称号解锁提示 */
 .unlock-badge{margin:14px auto 0;padding:8px 18px;background:rgba(196,151,90,.08);border:1px solid rgba(196,151,90,.2);border-radius:20px;color:#d4a860;font-size:.85rem;letter-spacing:.1em;display:none;text-shadow:0 1px 4px rgba(0,0,0,.2)}
 .unlock-badge.show{display:block;animation:feedbackIn .5s ease}
-
-/* 返回首页按钮 */
-.home-btn{background:rgba(196,151,90,.04);color:rgba(196,151,90,.45);border:1px solid rgba(196,151,90,.12);border-radius:6px;padding:5px 14px;font-size:.78rem;font-family:inherit;cursor:pointer;transition:all .3s ease;letter-spacing:.1em}
-.home-btn:hover{background:rgba(196,151,90,.1);color:#c4975a;border-color:rgba(196,151,90,.25)}
 
 /* 朝代左右滑动选择 */
 .era-slider-wrap{width:100%;max-width:700px;margin-bottom:8px;position:relative}
@@ -360,7 +333,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
     <div class="status-item lives"><span>❤</span><span class="num" id="livesCount">10</span></div>
     <button class="home-btn" id="homeBtn" onclick="confirmQuit()">返回</button>
   </div>
-  <div class="timer-row"><div class="timer-bar" id="timerBar"></div><span class="timer-text" id="timerText">20</span></div>
+  <div class="timer-row"><div class="timer-bar" id="timerBar"><div class="timer-fill" id="timerFill"></div></div><span class="timer-text" id="timerText">20</span></div>
   <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
   <div class="tools-row" id="toolsRow">
     <button class="tool-btn" id="toolFifty" onclick="useTool('fifty')"><span class="tool-icon">⑤</span><span class="tool-name">五五分</span><span class="tool-count" id="countFifty">0</span></button>
@@ -521,7 +494,7 @@ function updateStartStats(){
   }
 }
 
-function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='startPage')updateStartStats();}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='startPage')updateStartStats();document.documentElement.style.overflow=id==='quizPage'?'hidden':'';document.body.style.overflow=id==='quizPage'?'hidden':'';}
 
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
@@ -550,14 +523,19 @@ function startTimer(){
   },1000);
 }
 function updateTimerUI(){
-  const bar=document.getElementById('timerBar'),txt=document.getElementById('timerText');
+  const fill=document.getElementById('timerFill'),txt=document.getElementById('timerText');
   txt.textContent=GS.timeLeft;
   const pct=GS.timeLeft/GS.maxTime*100;
-  bar.querySelector('::after');
-  bar.style.setProperty('--tw',pct+'%');
-  // 用内联样式控制渐变条宽度
-  bar.innerHTML='<i style="display:block;height:100%;width:'+pct+'%;background:'+(GS.timeLeft<=5?'#a04040':GS.timeLeft<=10?'linear-gradient(90deg,#e67e22,#e74c3c)':'linear-gradient(90deg,#8b4513,#c4975a)')+';transition:width .95s linear"></i>';
-  txt.className='timer-text'+(GS.timeLeft<=5?' danger':GS.timeLeft<=10?' warn':'');
+  // 时间越少颜色越红
+  let color;
+  if(pct>50)color='linear-gradient(90deg,#c4975a,#d4a017)';
+  else if(pct>25)color='linear-gradient(90deg,#e67e22,#e74c3c)';
+  else if(pct>10)color='#e74c3c';
+  else color='#a04040';
+  fill.style.width=pct+'%';
+  fill.style.background=color;
+  fill.style.animation=GS.timeLeft<=5?'timerPulse .5s ease infinite alternate':'none';
+  txt.style.color=GS.timeLeft<=5?'#ef5350':GS.timeLeft<=10?'#e67e22':'#c4975a';
 }
 function stopTimer(){clearInterval(GS.timer);}
 
