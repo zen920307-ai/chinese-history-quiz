@@ -365,7 +365,7 @@ function initEraSlider(){
     const card=document.createElement('div');
     card.className='era-slide'+(era.id==='all'?' selected':'');
     card.dataset.era=era.id;
-    const count=era.id==='all'?'全部':allQuestions.filter(q=>q.ei===era.id).length;
+    const count=era.id==='all'?allQuestions.length:allQuestions.filter(q=>q.ei===era.id).length;
     card.innerHTML='<div class="era-name">'+era.icon+' '+era.name+'</div><div class="era-range">'+era.range+'</div><div class="era-count">'+count+' 题</div>';
     card.onclick=()=>selectEra(era.id);
     slider.appendChild(card);
