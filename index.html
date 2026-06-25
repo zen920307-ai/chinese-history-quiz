@@ -234,10 +234,10 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 
 /* 响应式 */
 /* ===== 背景音乐按钮 ===== */
-.music-toggle{position:fixed;bottom:24px;left:24px;z-index:1000;width:44px;height:44px;border-radius:50%;border:2px solid rgba(196,151,90,.12);color:rgba(196,151,90,.25);font-size:1.15rem;cursor:pointer;transition:all .35s ease;display:flex;align-items:center;justify-content:center;font-family:"Noto Serif SC",serif;backdrop-filter:blur(6px);background:rgba(26,21,16,.5);position:relative}
+.music-toggle{position:fixed;bottom:24px;right:24px;z-index:1000;width:44px;height:44px;border-radius:50%;border:2px solid rgba(196,151,90,.12);color:rgba(196,151,90,.25);font-size:1.15rem;cursor:pointer;transition:all .35s ease;display:flex;align-items:center;justify-content:center;font-family:"Noto Serif SC",serif;backdrop-filter:blur(6px);background:rgba(26,21,16,.5)}
 .music-toggle:hover{color:rgba(196,151,90,.5);border-color:rgba(196,151,90,.3);background:rgba(26,21,16,.7);transform:translateY(-2px)}
 .music-toggle:active{transform:translateY(0) scale(.95)}
-.music-toggle .music-tooltip{position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);background:rgba(26,21,16,.85);border:1px solid rgba(196,151,90,.12);border-radius:4px;padding:2px 8px;font-size:.62rem;color:rgba(196,151,90,.5);white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none}
+.music-toggle .music-tooltip{position:absolute;top:-22px;left:50%;transform:translateX(-50%);background:rgba(26,21,16,.85);border:1px solid rgba(196,151,90,.12);border-radius:4px;padding:2px 8px;font-size:.62rem;color:rgba(196,151,90,.5);white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none}
 .music-toggle:hover .music-tooltip{opacity:1}
 /* 播放状态：亮金色 + 旋转动画 */
 .music-toggle.playing{color:#d4a860;border-color:rgba(212,168,96,.35);background:rgba(212,168,96,.08);box-shadow:0 0 14px rgba(212,168,96,.1);animation:musicSpin 8s linear infinite}
@@ -255,7 +255,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 	  .game-info{padding:16px 20px}.combo-display{right:10px}.combo-number{font-size:2.2rem}
 	  .end-card{padding:28px}.era-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
 	  .era-card{padding:12px 8px}.floating-text{display:none}
-	  .music-toggle{top:auto;right:auto;bottom:14px;left:14px;width:36px;height:36px;font-size:1rem}
+	  .music-toggle{top:auto;left:auto;bottom:14px;right:14px;width:36px;height:36px;font-size:1rem}
 	}
 
 /* ===== 古风滚动条 ===== */
@@ -3821,7 +3821,20 @@ function toggleMusic(){
       icon.textContent = '♫';
       tip.textContent = '古乐';
       localStorage.setItem('hqMusicMuted', '0');
-    }).catch(()=>{});
+    }).catch((err)=>{
+      console.warn('BGM播放失败:', err);
+      // 如果 MP3 加载失败，降级为 Web Audio 合成
+      tip.textContent = '加载中';
+      audio.load();
+      audio.play().then(()=>{
+        bgmPlaying = true;
+        btn.classList.add('playing');
+        icon.textContent = '♫';
+        tip.textContent = '古乐';
+      }).catch(()=>{
+        tip.textContent = '无音乐';
+      });
+    });
   } else {
     // 静音
     audio.pause();
