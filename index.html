@@ -239,10 +239,12 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .music-toggle:active{transform:translateY(0) scale(.95)}
 .music-toggle .music-tooltip{position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);background:rgba(26,21,16,.85);border:1px solid rgba(196,151,90,.12);border-radius:4px;padding:2px 8px;font-size:.62rem;color:rgba(196,151,90,.5);white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none}
 .music-toggle:hover .music-tooltip{opacity:1}
-/* 播放状态：亮金色 */
-.music-toggle.playing{color:#d4a860;border-color:rgba(212,168,96,.35);background:rgba(212,168,96,.08);box-shadow:0 0 12px rgba(212,168,96,.08)}
-.music-toggle.playing:hover{box-shadow:0 0 20px rgba(212,168,96,.15)}
+/* 播放状态：亮金色 + 旋转动画 */
+.music-toggle.playing{color:#d4a860;border-color:rgba(212,168,96,.35);background:rgba(212,168,96,.08);box-shadow:0 0 14px rgba(212,168,96,.1);animation:musicSpin 8s linear infinite}
+.music-toggle.playing:hover{box-shadow:0 0 24px rgba(212,168,96,.18);animation-duration:5s}
 .music-toggle.playing::after{content:"●";position:absolute;top:-1px;right:-1px;font-size:7px;line-height:1;color:#4caf50;text-shadow:0 0 6px rgba(76,175,80,.5);animation:musicPulse 1.5s ease infinite}
+/* 播放时图标旋转 */
+@keyframes musicSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 /* 静音状态：暗淡 */
 @keyframes musicPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.2)}}
 
@@ -3795,36 +3797,83 @@ updateStartStats();
 })();
 
 // ===== 背景音乐控制 =====
-// 使用 Web Audio API 生成古风五声音阶旋律，模拟古筝/古琴音色
+// 使用 Web Audio API 生成古典五声音阶旋律
+// 采用更传统的中国古典音乐旋律模式（如《梅花三弄》风格）
 let bgmCtx = null;
 let bgmPlaying = false;
 let bgmMuted = false;
 let bgmMasterGain = null;
+let bgmTimerInterval = null;
 
 // 中国五声音阶（C 调: 宫=C4, 商=D4, 角=E4, 徵=G4, 羽=A4）
-const PENTATONIC = [261.63, 293.66, 329.63, 392.00, 440.00];
+// 扩展到两个多八度
+const NOTES = {
+  C4: 261.63, D4: 293.66, E4: 329.63, G4: 392.00, A4: 440.00,
+  C5: 523.25, D5: 587.33, E5: 659.25, G5: 783.99, A5: 880.00,
+  C3: 130.81, G3: 196.00, E3: 164.81, A3: 220.00,
+  // 古筝低音区
+  D3: 146.83
+};
 
-// 更悠扬的古筝/古琴风格旋律（0=宫,1=商,2=角,3=徵,4=羽）
-const BGM_MELODY = [
-  [0,2,4,3,2,0,2,3],
-  [1,3,4,4,3,1,3,4],
-  [0,2,3,2,0,2,3,4],
-  [4,3,2,0,2,3,4,3],
-  [2,0,3,1,4,3,2,0],
-  [3,4,2,0,1,3,2,1],
-  [0,4,3,2,0,4,3,2],
-  [2,3,4,0,2,3,4,0],
+// 中国传统古曲旋律（混合自由节奏 + 五声音阶）
+// 旋律序列: [noteKey, duration_in_beats, is_rest?]
+// 模拟《渔舟唱晚》或《高山流水》风格的旋律
+const MELODY_PHRASE = [
+  ['C4',2,0],['E4',1,0],['G4',2,0],['A4',1,0],['G4',2,0],
+  ['E4',2,0],['D4',1,0],['C4',3,0],['rest',1,1],
+  ['C5',2,0],['A4',1,0],['G4',3,0],['E4',2,0],
+  ['D4',2,0],['C4',4,0],['rest',2,1],
+  ['G4',2,0],['A4',1,0],['C5',2,0],['A4',1,0],
+  ['G4',2,0],['E4',2,0],['C4',3,0],['rest',1,1],
+  ['E4',2,0],['G4',1,0],['A4',2,0],['C5',3,0],
+  ['A4',2,0],['G4',2,0],['E4',4,0],['rest',2,1],
+  ['D4',2,0],['G4',2,0],['A4',2,0],['C5',1,0],
+  ['A4',2,0],['G4',2,0],['E4',2,0],['C4',4,0],
+  ['rest',4,1],
 ];
 
+// 伴奏低音（缓慢，每两拍一个）
+const BASS_PHRASE = [
+  ['C3',4,0],['rest',4,1],
+  ['G3',4,0],['rest',4,1],
+  ['A3',4,0],['rest',4,1],
+  ['E3',4,0],['rest',4,1],
+  ['C3',4,0],['rest',4,1],
+  ['G3',4,0],['rest',4,1],
+  ['A3',4,0],['rest',4,1],
+  ['E3',4,0],['rest',4,1],
+];
+
+function createGuqinWave(ctx){
+  // 模拟古琴音色：基频为主，叠加少量高次泛音，衰减较快
+  const real = new Float32Array(8);
+  const imag = new Float32Array(8);
+  real[0] = 0; imag[0] = 0;
+  real[1] = 0; imag[1] = 0; // 基频
+  real[2] = 0; imag[2] = 0.3;  // 高次泛音（较柔和）
+  real[3] = 0; imag[3] = 0.1;
+  real[4] = 0; imag[4] = 0.05;
+  real[5] = 0; imag[5] = 0.02;
+  for(let i=6;i<8;i++){real[i]=0;imag[i]=0.01;}
+  return ctx.createPeriodicWave(real, imag, {disableNormalization:false});
+}
+
 function createZhengWave(ctx){
-  const real = new Float32Array(16);
-  const imag = new Float32Array(16);
-  const harmonics = [1.0, 0.6, 0.2, 0.3, 0.08, 0.15, 0.06, 0.1, 0.04, 0.05];
-  for(let i=0; i<harmonics.length; i++){
-    real[i] = 0;
-    imag[i] = harmonics[i];
-  }
-  return ctx.createPeriodicWave(real, imag, {disableNormalization: false});
+  // 模拟古筝音色：基频强，丰富泛音（七声音阶泛音）
+  const real = new Float32Array(12);
+  const imag = new Float32Array(12);
+  imag[1] = 1.0;   // 基频
+  imag[2] = 0.5;   // 八度泛音
+  imag[3] = 0.3;   // 十二度泛音
+  imag[4] = 0.4;   // 八度
+  imag[5] = 0.15;  // 十五度泛音
+  imag[6] = 0.25;  // 十七度
+  imag[7] = 0.1;
+  imag[8] = 0.15;
+  imag[9] = 0.05;
+  imag[10] = 0.08;
+  imag[11] = 0.03;
+  return ctx.createPeriodicWave(real, imag, {disableNormalization:false});
 }
 
 function initBGM(){
@@ -3835,14 +3884,35 @@ function initBGM(){
   }
   if(!bgmMasterGain){
     bgmMasterGain = bgmCtx.createGain();
-    bgmMasterGain.gain.value = 1;
+    bgmMasterGain.gain.value = bgmMuted ? 0 : 0.7;
     bgmMasterGain.connect(bgmCtx.destination);
   }
 }
 
 function setBgmVolume(v){
   if(!bgmMasterGain || !bgmCtx) return;
-  bgmMasterGain.gain.linearRampToValueAtTime(v, bgmCtx.currentTime + 0.1);
+  bgmMasterGain.gain.linearRampToValueAtTime(v, bgmCtx.currentTime + 0.15);
+}
+
+function playNote(freq, startTime, duration, volume, waveType){
+  if(freq <= 0 || !bgmCtx) return;
+  
+  const osc = bgmCtx.createOscillator();
+  const gainNode = bgmCtx.createGain();
+  
+  osc.setPeriodicWave(waveType);
+  osc.frequency.setValueAtTime(freq, startTime);
+  
+  // 古琴/古筝的衰减包络：快速起音，慢速衰减
+  gainNode.gain.setValueAtTime(0, startTime);
+  gainNode.gain.linearRampToValueAtTime(volume, startTime + 0.02);
+  gainNode.gain.setValueAtTime(volume, startTime + duration * 0.15);
+  gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+  
+  osc.connect(gainNode);
+  gainNode.connect(bgmMasterGain);
+  osc.start(startTime);
+  osc.stop(startTime + duration + 0.05);
 }
 
 function startBGM(){
@@ -3852,117 +3922,98 @@ function startBGM(){
   
   bgmPlaying = true;
   bgmMuted = false;
-  setBgmVolume(1);
+  setBgmVolume(0.7);
+  
   document.getElementById('musicToggle').classList.add('playing');
   document.getElementById('musicIcon').textContent = '♫';
   localStorage.setItem('hqMusicMuted', '0');
   
-  playBGMSequence();
+  // 使用 setInterval 来定时调度音符（比 setTimeout 更可靠）
+  scheduleBGM();
 }
 
-let _bgmWave = null;
-
-function playBGMSequence(){
+function scheduleBGM(){
   if(!bgmPlaying || !bgmCtx) return;
   
-  if(!_bgmWave) _bgmWave = createZhengWave(bgmCtx);
-  
   const now = bgmCtx.currentTime;
-  let time = now + 0.8;
+  const beatDuration = 0.45; // 每拍约0.45秒，舒缓的古典节奏
   
-  const noteDuration = 1.2;
-  const noteGap = 0.05;
+  // 预调度 2 个周期的旋律（约4-8秒 ahead）
+  let currentTime = now + 0.1;
   
-  const segIdx = Math.floor(Math.random() * BGM_MELODY.length);
-  const segment = BGM_MELODY[segIdx];
+  // 交替使用古琴和古筝波形模拟不同音色
+  const guqinWave = bgmCtx._guqinWave || (bgmCtx._guqinWave = createGuqinWave(bgmCtx));
+  const zhengWave = bgmCtx._zhengWave || (bgmCtx._zhengWave = createZhengWave(bgmCtx));
   
-  segment.forEach((idx, i) => {
-    const freq = PENTATONIC[idx];
-    const startTime = time + i * (noteDuration + noteGap);
+  const volume = 0.12;
+  
+  // 主旋律（古琴音色）
+  const phraseTime = bgmCtx._phraseTime || 0;
+  let phraseStart = (Math.floor(phraseTime) % MELODY_PHRASE.length);
+  
+  let t = currentTime;
+  for(let i = 0; i < MELODY_PHRASE.length; i++){
+    const idx = (phraseStart + i) % MELODY_PHRASE.length;
+    const [noteKey, beats, isRest] = MELODY_PHRASE[idx];
+    const dur = beats * beatDuration;
     
-    // 主音色
-    const osc = bgmCtx.createOscillator();
-    const gain = bgmCtx.createGain();
-    osc.setPeriodicWave(_bgmWave);
-    osc.frequency.setValueAtTime(freq, startTime);
-    gain.gain.setValueAtTime(0, startTime);
-    gain.gain.linearRampToValueAtTime(0.10, startTime + 0.03);
-    gain.gain.exponentialRampToValueAtTime(0.001, startTime + noteDuration * 0.85);
-    osc.connect(gain);
-    gain.connect(bgmMasterGain);
-    osc.start(startTime);
-    osc.stop(startTime + noteDuration + 0.1);
-    
-    // 低八度泛音层
-    if(i % 2 === 1){
-      const osc2 = bgmCtx.createOscillator();
-      const gain2 = bgmCtx.createGain();
-      osc2.setPeriodicWave(_bgmWave);
-      osc2.frequency.setValueAtTime(freq * 0.5, startTime);
-      gain2.gain.setValueAtTime(0, startTime);
-      gain2.gain.linearRampToValueAtTime(0.04, startTime + 0.04);
-      gain2.gain.exponentialRampToValueAtTime(0.001, startTime + noteDuration * 0.6);
-      osc2.connect(gain2);
-      gain2.connect(bgmMasterGain);
-      osc2.start(startTime);
-      osc2.stop(startTime + noteDuration + 0.1);
+    if(!isRest && noteKey !== 'rest'){
+      const freq = NOTES[noteKey];
+      if(freq){
+        playNote(freq, t, dur * 0.9, volume, guqinWave);
+      }
     }
-    
-    // 高八度泛音
-    if(i % 3 === 0){
-      const osc3 = bgmCtx.createOscillator();
-      const gain3 = bgmCtx.createGain();
-      osc3.setPeriodicWave(_bgmWave);
-      osc3.frequency.setValueAtTime(freq * 2, startTime + 0.1);
-      gain3.gain.setValueAtTime(0, startTime + 0.1);
-      gain3.gain.linearRampToValueAtTime(0.025, startTime + 0.13);
-      gain3.gain.exponentialRampToValueAtTime(0.001, startTime + noteDuration * 0.4);
-      osc3.connect(gain3);
-      gain3.connect(bgmMasterGain);
-      osc3.start(startTime + 0.1);
-      osc3.stop(startTime + noteDuration + 0.1);
-    }
-  });
+    t += dur;
+  }
   
-  const segmentDuration = segment.length * (noteDuration + noteGap);
-  bgmCtx._timer = setTimeout(() => {
-    playBGMSequence();
-  }, segmentDuration * 1000 + 600);
+  // 低音伴奏（古筝音色，每两拍）
+  t = currentTime;
+  for(let i = 0; i < BASS_PHRASE.length; i++){
+    const [noteKey, beats] = BASS_PHRASE[i];
+    const dur = beats * beatDuration;
+    if(noteKey !== 'rest'){
+      const freq = NOTES[noteKey];
+      if(freq){
+        playNote(freq, t, dur * 0.7, volume * 0.5, zhengWave);
+      }
+    }
+    t += dur;
+  }
+  
+  // 更新计数器
+  const totalPhraseBeats = MELODY_PHRASE.reduce((s,[,b])=>s+b,0);
+  bgmCtx._phraseTime = phraseTime + totalPhraseBeats;
+  
+  // 约每段旋律完成后重新调度
+  const scheduleInterval = totalPhraseBeats * beatDuration * 1000;
+  bgmTimerInterval = setInterval(scheduleBGM, scheduleInterval);
 }
 
 function stopBGM(){
   bgmPlaying = false;
-  if(bgmCtx && bgmCtx._timer){
-    clearTimeout(bgmCtx._timer);
-    bgmCtx._timer = null;
+  if(bgmTimerInterval){
+    clearInterval(bgmTimerInterval);
+    bgmTimerInterval = null;
   }
-  // 取消所有已调度但未播放的音符（已开始播放的由 masterGain 控制）
-  if(bgmCtx) bgmCtx.suspend();
-}
-
-function resumeBGM(){
-  if(bgmCtx) bgmCtx.resume();
 }
 
 function muteBGM(){
   bgmMuted = true;
-  bgmPlaying = false;
-  if(bgmCtx) bgmCtx.suspend();
+  setBgmVolume(0);
   document.getElementById('musicToggle').classList.remove('playing');
-  document.getElementById('musicIcon').textContent = '♪';  // 静音图标
+  document.getElementById('musicIcon').textContent = '♪';
+  document.getElementById('musicToggle').querySelector('.music-tooltip').textContent = '静音';
   localStorage.setItem('hqMusicMuted', '1');
 }
 
 function unmuteBGM(){
-  if(bgmMuted && !bgmPlaying){
-    bgmMuted = false;
-    bgmPlaying = true;
-    if(bgmCtx) bgmCtx.resume();
-    document.getElementById('musicToggle').classList.add('playing');
-    document.getElementById('musicIcon').textContent = '♫';  // 播放图标
-    localStorage.setItem('hqMusicMuted', '0');
-    playBGMSequence();
-  }
+  bgmMuted = false;
+  setBgmVolume(0.7);
+  document.getElementById('musicToggle').classList.add('playing');
+  document.getElementById('musicIcon').textContent = '♫';
+  document.getElementById('musicToggle').querySelector('.music-tooltip').textContent = '古琴';
+  localStorage.setItem('hqMusicMuted', '0');
+  if(!bgmPlaying) startBGM();
 }
 
 function toggleMusic(){
@@ -3983,15 +4034,23 @@ function toggleMusic(){
     if(!wasMuted){
       startBGM();
     } else {
-      // 之前静音过，更新 UI
+      bgmMuted = true;
       document.getElementById('musicToggle').classList.remove('playing');
       document.getElementById('musicIcon').textContent = '♪';
+      document.getElementById('musicToggle').querySelector('.music-tooltip').textContent = '静音';
+      setBgmVolume(0);
     }
     document.removeEventListener('click', startOnInteraction);
     document.removeEventListener('touchstart', startOnInteraction);
   };
   document.addEventListener('click', startOnInteraction);
   document.addEventListener('touchstart', startOnInteraction);
+  
+  // 页面关闭时清理
+  window.addEventListener('beforeunload', () => {
+    stopBGM();
+    if(bgmCtx) bgmCtx.close();
+  });
 })();
 </script>
 </body>
