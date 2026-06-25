@@ -118,7 +118,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 /* ===== 答题页 ===== */
 #quizPage{justify-content:flex-start;padding-top:20px;overflow:hidden;height:100vh;overscroll-behavior:none}
 #quizPage.scrollable{overflow-y:auto}
-.quiz-inner{width:100%;max-width:720px;display:flex;flex-direction:column;align-items:center;height:calc(100vh - 70px);overflow:hidden;gap:8px;padding:0 6px;flex-shrink:0}
+.quiz-inner{width:100%;max-width:720px;display:flex;flex-direction:column;align-items:center;height:calc(100vh - 70px);overflow:hidden;gap:8px;padding:0 6px;flex-shrink:0;position:relative}
 .top-bar{width:100%;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;flex-wrap:wrap;gap:8px;padding:0 4px}
 .status-item{display:flex;align-items:center;gap:6px;font-size:.8rem;color:rgba(196,151,90,.4)}
 .status-item .num{color:#d4a860;font-weight:700;font-size:.95rem;font-variant-numeric:tabular-nums}
@@ -145,7 +145,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .tool-btn .tool-count{background:rgba(196,151,90,.12);color:#d4a860;font-size:.65rem;font-weight:700;border-radius:8px;padding:1px 6px;min-width:16px;text-align:center}
 
 /* 题目卡 - 视觉突出 */
-.question-card{width:100%;flex-shrink:0;background:linear-gradient(160deg,rgba(196,151,90,.1),rgba(196,151,90,.03));border:1.5px solid rgba(196,151,90,.22);border-radius:10px;padding:28px 30px;margin:6px 0;animation:cardIn .5s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.3),inset 0 1px 0 rgba(196,151,90,.1)}
+.question-card{width:100%;flex-shrink:0;background:linear-gradient(160deg,rgba(196,151,90,.1),rgba(196,151,90,.03));border:1.5px solid rgba(196,151,90,.22);border-radius:10px;padding:28px 30px;margin:6px 0;animation:cardIn .5s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.3),inset 0 1px 0 rgba(196,151,90,.1);will-change:transform}
 .question-card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 10%,rgba(196,151,90,.2) 50%,transparent 90%)}
 .question-card::after{content:"";position:absolute;top:0;left:0;bottom:0;width:4px;background:linear-gradient(180deg,rgba(196,151,90,.35),rgba(196,151,90,.1));border-radius:0 2px 2px 0}
 @keyframes cardIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
@@ -160,7 +160,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .hint-text{margin-top:10px;padding:8px 14px;background:rgba(196,151,90,.06);border-left:2px solid rgba(196,151,90,.25);color:rgba(196,151,90,.55);font-size:.8rem;border-radius:0 4px 4px 0;letter-spacing:.04em}
 
 /* 选项列表 - 更鲜明区分 */
-.options-list{width:100%;display:flex;flex-direction:column;gap:12px;flex:1 1 auto;min-height:0;padding:6px 0;justify-content:flex-start;overflow-y:auto}
+.options-list{width:100%;display:flex;flex-direction:column;gap:12px;flex:1 1 auto;min-height:0;padding:6px 0 76px;justify-content:flex-start;overflow-y:auto;scrollbar-gutter:stable}
 .option-btn{width:100%;background:rgba(196,151,90,.025);border:1px solid rgba(196,151,90,.1);border-radius:8px;padding:14px 20px;color:#c4975a;font-size:.95rem;font-family:"Noto Serif SC",serif;cursor:pointer;transition:all .25s ease;display:flex;align-items:center;gap:14px;text-align:left;position:relative;overflow:hidden}
 @keyframes optionFadeIn{0%{opacity:0;transform:translateX(-12px)}100%{opacity:1;transform:translateX(0)}}
 .option-btn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,rgba(196,151,90,.06),transparent);transition:width .25s}
@@ -180,12 +180,14 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .option-btn.correct .option-letter{background:rgba(46,125,50,.3)!important;color:#66bb6a!important;border-color:rgba(46,125,50,.45)!important;box-shadow:0 0 12px rgba(46,125,50,.15)!important}
 .option-btn.wrong{background:rgba(183,28,28,.12)!important;border-color:rgba(183,28,28,.35)!important;box-shadow:0 0 20px rgba(183,28,28,.08),inset 0 0 20px rgba(183,28,28,.04)!important}
 .option-btn.wrong .option-letter{background:rgba(183,28,28,.25)!important;color:#ef5350!important;border-color:rgba(183,28,28,.4)!important;box-shadow:0 0 12px rgba(183,28,28,.12)!important}
-.option-btn.disabled{cursor:default;opacity:.6}
+.option-btn.disabled{cursor:default;pointer-events:none}
 .option-btn.disabled:not(.correct):not(.wrong){opacity:.25}
 
-/* 反馈区域 */
-.feedback{width:100%;margin-top:8px;padding:12px 20px;border-radius:8px;display:none;animation:feedbackIn .4s ease;flex-shrink:0}
+/* 反馈区域 - 用 absolute 定位在底部，不挤占选项区空间 */
+.feedback{position:absolute;left:0;right:0;bottom:0;padding:12px 20px;border-radius:0 0 10px 10px;display:none;animation:feedbackSlide .35s ease;min-height:60px;z-index:5}
+@keyframes feedbackSlide{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes feedbackIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes feedbackSlide{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .feedback.show{display:block}
 .feedback.correct-fb{background:rgba(46,125,50,.08);border:1px solid rgba(46,125,50,.15)}
 .feedback.wrong-fb{background:rgba(183,28,28,.07);border:1px solid rgba(183,28,28,.15)}
@@ -227,7 +229,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 @keyframes correctFlash{0%{outline:0 solid rgba(76,175,80,0)}40%{outline:3px solid rgba(76,175,80,.25)}100%{outline:0 solid rgba(76,175,80,0)}}
 .question-card.flash-correct{animation:correctFlash .8s ease;outline-offset:-1px}
 
-@keyframes wrongShake{0%,100%{transform:none}15%{transform:translateX(-5px)}30%{transform:translateX(5px)}45%{transform:translateX(-4px)}60%{transform:translateX(4px)}75%{transform:translateX(-2px)}90%{transform:translateX(2px)}}
+@keyframes wrongShake{0%{transform:translateX(0) rotate(0)}15%{transform:translate(-6px,0) rotate(.5deg)}30%{transform:translate(6px,0) rotate(-.5deg)}45%{transform:translate(-4px,0)}60%{transform:translate(4px,0)}75%{transform:translate(-2px,0)}90%{transform:translate(2px,0)}100%{transform:translateX(0) rotate(0)}}
 .question-card.flash-wrong{animation:wrongShake .55s ease;will-change:transform}
 
 /* 响应式 */
@@ -590,7 +592,7 @@ function showQuestion(){
   document.getElementById('hintText').style.display='none';
   document.getElementById('hintText').textContent='';
   const card=document.getElementById('questionCard');
-  card.classList.remove('bounce-in');card.offsetHeight;card.classList.add('bounce-in');
+  card.classList.remove('bounce-in');requestAnimationFrame(()=>{card.classList.add('bounce-in')});
   const letters=['A','B','C','D'];
   const opts=q.o.map((t,i)=>({text:t,correct:i===q.a}));
   const shuffled=shuffle(opts);
@@ -703,7 +705,10 @@ function showFeedback(ok,tip,titleOverride,extra){
   // 答对答错都显示继续按钮（答对3秒后自动跳转）
   nextBtn.style.display='inline-block';
   nextBtn.classList.add('btn');
-  fb.scrollIntoView({behavior:'smooth',block:'nearest'});
+  // 确保反馈区域可见但不触发页面滚动
+  if(fb.getBoundingClientRect().bottom > window.innerHeight){
+    fb.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
 }
 
 function nextQuestion(){
@@ -3787,31 +3792,41 @@ updateStartStats();
 })();
 
 // ===== 背景音乐控制 =====
-// 使用 Web Audio API 生成古风五声音阶旋律，无需外部 MP3 文件
+// 使用 Web Audio API 生成古风五声音阶旋律，模拟古筝/古琴音色
 let bgmCtx = null;
 let bgmPlaying = false;
+let bgmUserInteracted = false;
 
-// 中国五声音阶频率（宫商角徵羽）
-const PENTATONIC = {
-  // C 调: 宫=C, 商=D, 角=E, 徵=G, 羽=A
-  gong:  261.63, // C4
-  shang: 293.66, // D4
-  jue:  329.63, // E4
-  zhi:  392.00, // G4
-  yu:   440.00  // A4
-};
+// 中国五声音阶（C 调: 宫=C4, 商=D4, 角=E4, 徵=G4, 羽=A4）
+const PENTATONIC = [261.63, 293.66, 329.63, 392.00, 440.00];
 
-// 古曲风格的旋律序列（索引：0=宫,1=商,2=角,3=徵,4=羽）
-const MELODY = [
-  [0,1,3,2,1,0],  // 宫商徵角商宫
-  [1,3,4,3,1,0],  // 商徵羽徵商宫
-  [2,3,4,4,3,2],  // 角徵羽羽徵角
-  [0,2,4,3,1,0],  // 宫角羽徵商宫
-  [4,3,2,3,4,3],  // 羽徵角徵羽徵
-  [3,2,0,2,3,1],  // 徵角宫角徵商
+// 更悠扬的古筝/古琴风格旋律（0=宫,1=商,2=角,3=徵,4=羽）
+// 采用更慢、更舒展的序列，模拟古筝刮奏和泛音
+const BGM_MELODY = [
+  [0,2,4,3,2,0,2,3],
+  [1,3,4,4,3,1,3,4],
+  [0,2,3,2,0,2,3,4],
+  [4,3,2,0,2,3,4,3],
+  [2,0,3,1,4,3,2,0],
+  [3,4,2,0,1,3,2,1],
+  [0,4,3,2,0,4,3,2],
+  [2,3,4,0,2,3,4,0],
 ];
-const MELODY_NOTES = Object.values(PENTATONIC);
-const MELODY_INDEXES = MELODY.flat();
+
+// 创建古筝/古琴风格的 periodicWave（包含丰富的泛音列）
+function createZhengWave(ctx){
+  const real = new Float32Array(16);
+  const imag = new Float32Array(16);
+  // 基频 + 泛音：模拟古筝拨弦后富含高次泛音的音色
+  // 1  2  3  4  5  6  7  8  9  10
+  // 基 八 五 八 三 五 七 二 三 四 度泛音
+  const harmonics = [1.0, 0.6, 0.2, 0.3, 0.08, 0.15, 0.06, 0.1, 0.04, 0.05];
+  for(let i=0; i<harmonics.length; i++){
+    real[i] = 0;
+    imag[i] = harmonics[i];
+  }
+  return ctx.createPeriodicWave(real, imag, {disableNormalization: false});
+}
 
 function initBGM(){
   if(!bgmCtx){
@@ -3834,58 +3849,78 @@ function startBGM(){
   playBGMSequence();
 }
 
+let _bgmWave = null;
+
 function playBGMSequence(){
   if(!bgmPlaying || !bgmCtx) return;
   
+  if(!_bgmWave) _bgmWave = createZhengWave(bgmCtx);
+  
   const now = bgmCtx.currentTime;
-  let time = now + 0.5;
+  let time = now + 0.8; // 小延迟开始
   
-  // 每个音符 0.8 秒
-  const noteDuration = 0.8;
+  // 每个音符持续时间（更慢，更悠扬）
+  const noteDuration = 1.2;
+  const noteGap = 0.05;
   
-  // 播放一小段旋律（8个音符）
-  const segment = MELODY_INDEXES.slice(0, 8);
+  // 随机选一段旋律
+  const segIdx = Math.floor(Math.random() * BGM_MELODY.length);
+  const segment = BGM_MELODY[segIdx];
   
   segment.forEach((idx, i) => {
-    const freq = MELODY_NOTES[idx];
-    const startTime = time + i * noteDuration;
+    const freq = PENTATONIC[idx];
+    const startTime = time + i * (noteDuration + noteGap);
     
-    // 创建振荡器（主音 - 类似古琴的泛音）
+    // ===== 主音色（使用 periodicWave 模拟古筝） =====
     const osc = bgmCtx.createOscillator();
     const gain = bgmCtx.createGain();
-    
-    osc.type = 'sine';
+    osc.setPeriodicWave(_bgmWave);
     osc.frequency.setValueAtTime(freq, startTime);
-    
-    // 音量包络 - 模拟古琴的衰减
-    gain.gain.setValueAtTime(0.07, startTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, startTime + noteDuration * 0.9);
-    
+    // 古筝拨弦：快速起音 → 缓慢衰减
+    gain.gain.setValueAtTime(0, startTime);
+    gain.gain.linearRampToValueAtTime(0.10, startTime + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + noteDuration * 0.85);
     osc.connect(gain);
     gain.connect(bgmCtx.destination);
-    
     osc.start(startTime);
     osc.stop(startTime + noteDuration);
     
-    // 添加第二层泛音，模拟古琴音色
-    if(i % 2 === 0){
+    // ===== 低八度泛音层（增加厚度） =====
+    if(i % 2 === 1){
       const osc2 = bgmCtx.createOscillator();
       const gain2 = bgmCtx.createGain();
-      osc2.type = 'triangle';
-      osc2.frequency.setValueAtTime(freq * 2, startTime);
-      gain2.gain.setValueAtTime(0.02, startTime);
-      gain2.gain.exponentialRampToValueAtTime(0.001, startTime + noteDuration * 0.7);
+      osc2.setPeriodicWave(_bgmWave);
+      osc2.frequency.setValueAtTime(freq * 0.5, startTime);
+      gain2.gain.setValueAtTime(0, startTime);
+      gain2.gain.linearRampToValueAtTime(0.04, startTime + 0.04);
+      gain2.gain.exponentialRampToValueAtTime(0.001, startTime + noteDuration * 0.6);
       osc2.connect(gain2);
       gain2.connect(bgmCtx.destination);
       osc2.start(startTime);
       osc2.stop(startTime + noteDuration);
     }
+    
+    // ===== 高八度泛音（增加晶莹感，像古筝泛音） =====
+    if(i % 3 === 0){
+      const osc3 = bgmCtx.createOscillator();
+      const gain3 = bgmCtx.createGain();
+      osc3.setPeriodicWave(_bgmWave);
+      osc3.frequency.setValueAtTime(freq * 2, startTime + 0.1);
+      gain3.gain.setValueAtTime(0, startTime + 0.1);
+      gain3.gain.linearRampToValueAtTime(0.025, startTime + 0.13);
+      gain3.gain.exponentialRampToValueAtTime(0.001, startTime + noteDuration * 0.4);
+      osc3.connect(gain3);
+      gain3.connect(bgmCtx.destination);
+      osc3.start(startTime + 0.1);
+      osc3.stop(startTime + noteDuration);
+    }
   });
   
-  // 每隔约6.4秒重新触发下一段
+  // 每段完后稍作呼吸再播下一段
+  const segmentDuration = segment.length * (noteDuration + noteGap);
   bgmCtx._timer = setTimeout(() => {
     playBGMSequence();
-  }, segment.length * noteDuration * 1000 + 200);
+  }, segmentDuration * 1000 + 600);
 }
 
 function stopBGM(){
@@ -3894,10 +3929,10 @@ function stopBGM(){
     clearTimeout(bgmCtx._timer);
     bgmCtx._timer = null;
   }
-  // 停止所有声音 - 由于 osc 是自动结束的，只需停止新音序
 }
 
 function toggleMusic(){
+  bgmUserInteracted = true;
   if(bgmPlaying){
     stopBGM();
     document.getElementById('musicToggle').classList.remove('playing');
@@ -3911,9 +3946,8 @@ function toggleMusic(){
 // 初始化音乐状态
 (function(){
   initBGM();
-  // 如果用户之前没有静音，自动开始播放（需要用户交互后才能播放）
-  // 在第一次点击页面时启动
   const startOnInteraction = () => {
+    if(bgmUserInteracted) return;
     if(localStorage.getItem('hqMusicMuted') !== '1' && !bgmPlaying){
       startBGM();
     }
