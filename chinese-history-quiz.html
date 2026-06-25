@@ -8,7 +8,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;400;600;700;900&family=Ma+Shan+Zheng&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 html{font-size:16px;scroll-behavior:smooth}
-body{font-family:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;background:#1a1510;color:#c4975a;min-height:100vh;overflow-x:hidden;position:fixed;top:0;left:0;width:100%;height:100%;overflow:hidden}
+body{font-family:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;background:#1a1510;color:#c4975a;min-height:100vh;overflow-x:hidden;position:relative}
 
 /* ===== 深色古纸纹理 ===== */
 body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
@@ -42,7 +42,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .dust-particle{position:fixed;width:2px;height:2px;border-radius:50%;background:rgba(180,140,70,.12);pointer-events:none;z-index:0;animation:dustFloat linear infinite}
 @keyframes dustFloat{0%{transform:translateY(100vh) translateX(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-10vh) translateX(100px);opacity:0}}
 
-.page{display:none;flex-direction:column;align-items:center;min-height:100vh;padding:36px 28px 60px;position:relative;z-index:1;background:linear-gradient(180deg,#231c12,#1e1810 30%,#1a1510 70%,#161208);color:#c4975a;border-left:14px solid #2a1a0c;border-right:14px solid #2a1a0c;box-shadow:inset 4px 0 14px -4px rgba(0,0,0,.3),inset -4px 0 14px -4px rgba(0,0,0,.3),0 0 80px rgba(0,0,0,.4);max-width:800px;margin:0 auto;overflow-y:auto;overflow-x:hidden}
+.page{display:none;flex-direction:column;align-items:center;min-height:100vh;padding:36px 28px 60px;position:relative;z-index:1;background:linear-gradient(180deg,#231c12,#1e1810 30%,#1a1510 70%,#161208);color:#c4975a;border-left:14px solid #2a1a0c;border-right:14px solid #2a1a0c;box-shadow:inset 4px 0 14px -4px rgba(0,0,0,.3),inset -4px 0 14px -4px rgba(0,0,0,.3),0 0 80px rgba(0,0,0,.4);max-width:800px;margin:0 auto}
 .page.active{display:flex}
 #startPage{justify-content:flex-start}
 #endPage{justify-content:flex-start}
@@ -232,12 +232,13 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 
 /* 响应式 */
 /* ===== 背景音乐按钮 ===== */
-.music-toggle{position:fixed;bottom:24px;left:24px;z-index:1000;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#2a1a0c,#3a2410);border:2px solid rgba(196,151,90,.25);color:#c4975a;font-size:1.3rem;cursor:pointer;transition:all .4s ease;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.4),0 0 20px rgba(196,151,90,.06);font-family:"Noto Serif SC",serif;backdrop-filter:blur(8px)}
-.music-toggle:hover{transform:translateY(-2px);border-color:rgba(196,151,90,.45);box-shadow:0 6px 24px rgba(0,0,0,.5),0 0 30px rgba(196,151,90,.1);background:linear-gradient(135deg,#3a2410,#5a3a1c)}
+.music-toggle{position:fixed;bottom:24px;left:24px;z-index:1000;width:42px;height:42px;border-radius:50%;background:rgba(196,151,90,.08);border:1px solid rgba(196,151,90,.15);color:#c4975a;font-size:1.2rem;cursor:pointer;transition:all .35s ease;display:flex;align-items:center;justify-content:center;font-family:"Noto Serif SC",serif;backdrop-filter:blur(6px)}
+.music-toggle:hover{background:rgba(196,151,90,.14);border-color:rgba(196,151,90,.3);transform:translateY(-2px)}
 .music-toggle:active{transform:translateY(0) scale(.95)}
-.music-toggle .music-tooltip{position:absolute;top:-32px;left:50%;transform:translateX(-50%);background:rgba(26,21,16,.9);border:1px solid rgba(196,151,90,.15);border-radius:4px;padding:3px 10px;font-size:.68rem;color:rgba(196,151,90,.6);white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none}
+.music-toggle .music-tooltip{position:absolute;bottom:-26px;left:50%;transform:translateX(-50%);background:rgba(26,21,16,.85);border:1px solid rgba(196,151,90,.12);border-radius:4px;padding:2px 8px;font-size:.62rem;color:rgba(196,151,90,.5);white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none}
 .music-toggle:hover .music-tooltip{opacity:1}
-.music-toggle.playing::after{content:"";position:absolute;width:10px;height:10px;top:-2px;right:-2px;border-radius:50%;background:#4caf50;box-shadow:0 0 8px rgba(76,175,80,.4);animation:musicPulse 1.5s ease infinite}
+.music-toggle.playing{background:rgba(196,151,90,.12);border-color:rgba(196,151,90,.25);box-shadow:0 0 12px rgba(196,151,90,.08)}
+.music-toggle.playing::after{content:"";position:absolute;width:8px;height:8px;top:-1px;right:-1px;border-radius:50%;background:#4caf50;box-shadow:0 0 6px rgba(76,175,80,.35);animation:musicPulse 1.5s ease infinite}
 @keyframes musicPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.2)}}
 
 @media(max-width:600px){
@@ -247,7 +248,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 	  .game-info{padding:16px 20px}.combo-display{right:10px}.combo-number{font-size:2.2rem}
 	  .end-card{padding:28px}.era-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
 	  .era-card{padding:12px 8px}.floating-text{display:none}
-	  .music-toggle{top:auto;right:auto;bottom:16px;left:16px;width:40px;height:40px;font-size:1.1rem}
+	  .music-toggle{top:auto;right:auto;bottom:14px;left:14px;width:36px;height:36px;font-size:1rem}
 	}
 
 /* ===== 古风滚动条 ===== */
@@ -313,7 +314,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 <div class="floating-text">治乱</div>
 <!-- 背景音乐按钮 -->
 <button class="music-toggle" id="musicToggle" onclick="toggleMusic()">
-  <span id="musicIcon">🎵</span>
+  <span id="musicIcon">♪</span>
   <span class="music-tooltip">古琴</span>
 </button>
 <!-- 连击 -->
@@ -514,7 +515,7 @@ function updateStartStats(){
   }
 }
 
-function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='startPage')updateStartStats();document.documentElement.style.overflow=id==='quizPage'?'hidden':'';document.body.style.overflow=id==='quizPage'?'hidden':'';document.querySelectorAll('.page').forEach(p=>{p.style.overflowY=id==='quizPage'?'hidden':'auto'});document.getElementById(id).style.overflowY=id==='quizPage'?'hidden':'auto';}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='startPage')updateStartStats();document.documentElement.style.overflow=id==='quizPage'?'hidden':'';document.body.style.overflow=id==='quizPage'?'hidden':'';}
 
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
@@ -3827,7 +3828,7 @@ function startBGM(){
   
   bgmPlaying = true;
   document.getElementById('musicToggle').classList.add('playing');
-  document.getElementById('musicIcon').textContent = '🔊';
+  document.getElementById('musicIcon').textContent = '♫';
   localStorage.setItem('hqMusicMuted', '0');
   
   playBGMSequence();
@@ -3900,7 +3901,7 @@ function toggleMusic(){
   if(bgmPlaying){
     stopBGM();
     document.getElementById('musicToggle').classList.remove('playing');
-    document.getElementById('musicIcon').textContent = '🔇';
+    document.getElementById('musicIcon').textContent = '♪';
     localStorage.setItem('hqMusicMuted', '1');
   } else {
     startBGM();
