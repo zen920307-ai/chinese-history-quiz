@@ -8,7 +8,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;400;600;700;900&family=Ma+Shan+Zheng&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 html{font-size:16px;scroll-behavior:smooth}
-body{font-family:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;background:#1a1510;color:#c4975a;min-height:100vh;overflow-x:hidden;position:relative}
+body{font-family:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;background:#1a1510;color:#c4975a;min-height:100vh;overflow-x:hidden;position:fixed;top:0;left:0;width:100%;height:100%;overflow:hidden}
 
 /* ===== 深色古纸纹理 ===== */
 body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
@@ -42,9 +42,10 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .dust-particle{position:fixed;width:2px;height:2px;border-radius:50%;background:rgba(180,140,70,.12);pointer-events:none;z-index:0;animation:dustFloat linear infinite}
 @keyframes dustFloat{0%{transform:translateY(100vh) translateX(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-10vh) translateX(100px);opacity:0}}
 
-.page{display:none;flex-direction:column;align-items:center;min-height:100vh;padding:36px 28px 50px;position:relative;z-index:1;background:linear-gradient(180deg,#231c12,#1e1810 30%,#1a1510 70%,#161208);color:#c4975a;border-left:14px solid #2a1a0c;border-right:14px solid #2a1a0c;box-shadow:inset 4px 0 14px -4px rgba(0,0,0,.3),inset -4px 0 14px -4px rgba(0,0,0,.3),0 0 80px rgba(0,0,0,.4);max-width:800px;margin:0 auto}
-#startPage{justify-content:flex-start}
+.page{display:none;flex-direction:column;align-items:center;min-height:100vh;height:100vh;padding:36px 28px 50px;position:relative;z-index:1;background:linear-gradient(180deg,#231c12,#1e1810 30%,#1a1510 70%,#161208);color:#c4975a;border-left:14px solid #2a1a0c;border-right:14px solid #2a1a0c;box-shadow:inset 4px 0 14px -4px rgba(0,0,0,.3),inset -4px 0 14px -4px rgba(0,0,0,.3),0 0 80px rgba(0,0,0,.4);max-width:800px;margin:0 auto;overflow-y:auto;overflow-x:hidden}
 .page.active{display:flex}
+#startPage{justify-content:flex-start}
+#endPage{justify-content:flex-start}
 /* 上下木轴滚条 */
 .page::before{content:"";position:absolute;top:-12px;left:-14px;right:-14px;height:16px;background:linear-gradient(180deg,#1a0e04,#3a2410,#5a3a1c,#8b6540,#5a3a1c,#3a2410,#1a0e04);border-radius:8px 8px 0 0;box-shadow:0 4px 16px rgba(0,0,0,.5);z-index:3}
 .page::after{content:"";position:absolute;bottom:-12px;left:-14px;right:-14px;height:16px;background:linear-gradient(180deg,#1a0e04,#3a2410,#5a3a1c,#8b6540,#5a3a1c,#3a2410,#1a0e04);border-radius:0 0 8px 8px;box-shadow:0 -4px 16px rgba(0,0,0,.5);z-index:3}
@@ -230,19 +231,33 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 .question-card.flash-wrong{animation:wrongShake .55s ease;will-change:transform}
 
 /* 响应式 */
-@media(max-width:600px){
-  .question-card{padding:22px 20px}.option-btn{padding:12px 16px;font-size:.9rem}
-  .top-bar{gap:6px}.status-item{font-size:.72rem}.stats-bar{gap:8px}
-  .stat-item{padding:8px 14px;min-width:80px}.stat-item .value{font-size:1.1rem}
-  .game-info{padding:16px 20px}.combo-display{right:10px}.combo-number{font-size:2.2rem}
-  .end-card{padding:28px}.era-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
-  .era-card{padding:12px 8px}.floating-text{display:none}
-}
+/* ===== 背景音乐按钮 ===== */
+.music-toggle{position:fixed;top:20px;right:20px;z-index:1000;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#2a1a0c,#3a2410);border:2px solid rgba(196,151,90,.25);color:#c4975a;font-size:1.3rem;cursor:pointer;transition:all .4s ease;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.4),0 0 20px rgba(196,151,90,.06);font-family:"Noto Serif SC",serif;backdrop-filter:blur(8px)}
+.music-toggle:hover{transform:translateY(-2px);border-color:rgba(196,151,90,.45);box-shadow:0 6px 24px rgba(0,0,0,.5),0 0 30px rgba(196,151,90,.1);background:linear-gradient(135deg,#3a2410,#5a3a1c)}
+.music-toggle:active{transform:translateY(0) scale(.95)}
+.music-toggle .music-tooltip{position:absolute;top:-32px;left:50%;transform:translateX(-50%);background:rgba(26,21,16,.9);border:1px solid rgba(196,151,90,.15);border-radius:4px;padding:3px 10px;font-size:.68rem;color:rgba(196,151,90,.6);white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none}
+.music-toggle:hover .music-tooltip{opacity:1}
+.music-toggle.playing::after{content:"";position:absolute;width:10px;height:10px;top:-2px;right:-2px;border-radius:50%;background:#4caf50;box-shadow:0 0 8px rgba(76,175,80,.4);animation:musicPulse 1.5s ease infinite}
+@keyframes musicPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.2)}}
 
-::-webkit-scrollbar{width:5px}
-::-webkit-scrollbar-track{background:rgba(196,151,90,.02)}
-::-webkit-scrollbar-thumb{background:rgba(196,151,90,.15);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:rgba(196,151,90,.3)}
+@media(max-width:600px){
+	  .question-card{padding:22px 20px}.option-btn{padding:12px 16px;font-size:.9rem}
+	  .top-bar{gap:6px}.status-item{font-size:.72rem}.stats-bar{gap:8px}
+	  .stat-item{padding:8px 14px;min-width:80px}.stat-item .value{font-size:1.1rem}
+	  .game-info{padding:16px 20px}.combo-display{right:10px}.combo-number{font-size:2.2rem}
+	  .end-card{padding:28px}.era-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+	  .era-card{padding:12px 8px}.floating-text{display:none}
+	  .music-toggle{top:12px;right:12px;width:40px;height:40px;font-size:1.1rem}
+	}
+
+/* ===== 古风滚动条 ===== */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:rgba(26,21,16,.6);border-left:1px solid rgba(196,151,90,.04)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(196,151,90,.18),rgba(196,151,90,.12));border-radius:3px;border:1px solid rgba(196,151,90,.06)}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,rgba(196,151,90,.3),rgba(196,151,90,.2));border-color:rgba(196,151,90,.12)}
+::-webkit-scrollbar-corner{background:transparent}
+/* Firefox */
+*{scrollbar-width:thin;scrollbar-color:rgba(196,151,90,.15) rgba(26,21,16,.6)}
 
 /* 称号栏 */
 .title-bar{display:flex;align-items:center;gap:12px;width:100%;max-width:520px;margin-bottom:14px;padding:10px 18px;background:rgba(196,151,90,.03);border:1px solid rgba(196,151,90,.08);border-radius:8px;flex-wrap:wrap}
@@ -296,6 +311,11 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 <div class="floating-text">古今</div>
 <div class="floating-text">兴亡</div>
 <div class="floating-text">治乱</div>
+<!-- 背景音乐按钮 -->
+<button class="music-toggle" id="musicToggle" onclick="toggleMusic()">
+  <span id="musicIcon">🎵</span>
+  <span class="music-tooltip">古琴</span>
+</button>
 <!-- 连击 -->
 <div class="combo-display" id="comboDisplay"><div class="combo-number" id="comboNumber">0</div><div class="combo-text">连击</div></div>
 
@@ -494,7 +514,7 @@ function updateStartStats(){
   }
 }
 
-function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='startPage')updateStartStats();document.documentElement.style.overflow=id==='quizPage'?'hidden':'';document.body.style.overflow=id==='quizPage'?'hidden':'';}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='startPage')updateStartStats();document.documentElement.style.overflow=id==='quizPage'?'hidden':'';document.body.style.overflow=id==='quizPage'?'hidden':'';document.querySelectorAll('.page').forEach(p=>{p.style.overflowY=id==='quizPage'?'hidden':'auto'});document.getElementById(id).style.overflowY=id==='quizPage'?'hidden':'auto';}
 
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
@@ -3763,6 +3783,144 @@ updateStartStats();
     p.style.cssText='left:'+Math.random()*100+'%;width:'+size+'px;height:'+size+'px;animation-duration:'+dur+'s;animation-delay:-'+delay+'s;';
     document.body.appendChild(p);
   }
+})();
+
+// ===== 背景音乐控制 =====
+// 使用 Web Audio API 生成古风五声音阶旋律，无需外部 MP3 文件
+let bgmCtx = null;
+let bgmPlaying = false;
+
+// 中国五声音阶频率（宫商角徵羽）
+const PENTATONIC = {
+  // C 调: 宫=C, 商=D, 角=E, 徵=G, 羽=A
+  gong:  261.63, // C4
+  shang: 293.66, // D4
+  jue:  329.63, // E4
+  zhi:  392.00, // G4
+  yu:   440.00  // A4
+};
+
+// 古曲风格的旋律序列（索引：0=宫,1=商,2=角,3=徵,4=羽）
+const MELODY = [
+  [0,1,3,2,1,0],  // 宫商徵角商宫
+  [1,3,4,3,1,0],  // 商徵羽徵商宫
+  [2,3,4,4,3,2],  // 角徵羽羽徵角
+  [0,2,4,3,1,0],  // 宫角羽徵商宫
+  [4,3,2,3,4,3],  // 羽徵角徵羽徵
+  [3,2,0,2,3,1],  // 徵角宫角徵商
+];
+const MELODY_NOTES = Object.values(PENTATONIC);
+const MELODY_INDEXES = MELODY.flat();
+
+function initBGM(){
+  if(!bgmCtx){
+    try {
+      bgmCtx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch(e){ return; }
+  }
+}
+
+function startBGM(){
+  if(bgmPlaying) return;
+  initBGM();
+  if(!bgmCtx) return;
+  
+  bgmPlaying = true;
+  document.getElementById('musicToggle').classList.add('playing');
+  document.getElementById('musicIcon').textContent = '🔊';
+  localStorage.setItem('hqMusicMuted', '0');
+  
+  playBGMSequence();
+}
+
+function playBGMSequence(){
+  if(!bgmPlaying || !bgmCtx) return;
+  
+  const now = bgmCtx.currentTime;
+  let time = now + 0.5;
+  
+  // 每个音符 0.8 秒
+  const noteDuration = 0.8;
+  
+  // 播放一小段旋律（8个音符）
+  const segment = MELODY_INDEXES.slice(0, 8);
+  
+  segment.forEach((idx, i) => {
+    const freq = MELODY_NOTES[idx];
+    const startTime = time + i * noteDuration;
+    
+    // 创建振荡器（主音 - 类似古琴的泛音）
+    const osc = bgmCtx.createOscillator();
+    const gain = bgmCtx.createGain();
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, startTime);
+    
+    // 音量包络 - 模拟古琴的衰减
+    gain.gain.setValueAtTime(0.07, startTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + noteDuration * 0.9);
+    
+    osc.connect(gain);
+    gain.connect(bgmCtx.destination);
+    
+    osc.start(startTime);
+    osc.stop(startTime + noteDuration);
+    
+    // 添加第二层泛音，模拟古琴音色
+    if(i % 2 === 0){
+      const osc2 = bgmCtx.createOscillator();
+      const gain2 = bgmCtx.createGain();
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(freq * 2, startTime);
+      gain2.gain.setValueAtTime(0.02, startTime);
+      gain2.gain.exponentialRampToValueAtTime(0.001, startTime + noteDuration * 0.7);
+      osc2.connect(gain2);
+      gain2.connect(bgmCtx.destination);
+      osc2.start(startTime);
+      osc2.stop(startTime + noteDuration);
+    }
+  });
+  
+  // 每隔约6.4秒重新触发下一段
+  bgmCtx._timer = setTimeout(() => {
+    playBGMSequence();
+  }, segment.length * noteDuration * 1000 + 200);
+}
+
+function stopBGM(){
+  bgmPlaying = false;
+  if(bgmCtx && bgmCtx._timer){
+    clearTimeout(bgmCtx._timer);
+    bgmCtx._timer = null;
+  }
+  // 停止所有声音 - 由于 osc 是自动结束的，只需停止新音序
+}
+
+function toggleMusic(){
+  if(bgmPlaying){
+    stopBGM();
+    document.getElementById('musicToggle').classList.remove('playing');
+    document.getElementById('musicIcon').textContent = '🔇';
+    localStorage.setItem('hqMusicMuted', '1');
+  } else {
+    startBGM();
+  }
+}
+
+// 初始化音乐状态
+(function(){
+  initBGM();
+  // 如果用户之前没有静音，自动开始播放（需要用户交互后才能播放）
+  // 在第一次点击页面时启动
+  const startOnInteraction = () => {
+    if(localStorage.getItem('hqMusicMuted') !== '1' && !bgmPlaying){
+      startBGM();
+    }
+    document.removeEventListener('click', startOnInteraction);
+    document.removeEventListener('touchstart', startOnInteraction);
+  };
+  document.addEventListener('click', startOnInteraction);
+  document.addEventListener('touchstart', startOnInteraction);
 })();
 </script>
 </body>
