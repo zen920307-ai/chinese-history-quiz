@@ -2,13 +2,13 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>中华历史知识问答</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;400;600;700;900&family=Ma+Shan+Zheng&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-html{font-size:16px;scroll-behavior:smooth}
-body{font-family:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;background:#1a1510;color:#c4975a;min-height:100vh;overflow-x:hidden;position:relative}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+body{font-family:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;background:#1a1510;color:#c4975a;min-height:100vh;overflow-x:hidden;position:relative;touch-action:manipulation}
 
 /* ===== 深色古纸纹理 ===== */
 body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
@@ -234,7 +234,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 
 /* 响应式 */
 /* ===== 背景音乐按钮 ===== */
-.music-toggle{position:fixed;bottom:24px;right:24px;z-index:1000;width:44px;height:44px;border-radius:50%;border:2px solid rgba(196,151,90,.12);color:rgba(196,151,90,.25);font-size:1.15rem;cursor:pointer;transition:all .35s ease;display:flex;align-items:center;justify-content:center;font-family:"Noto Serif SC",serif;backdrop-filter:blur(6px);background:rgba(26,21,16,.5)}
+.music-toggle{position:fixed;bottom:24px;right:24px;z-index:1000;width:44px;height:44px;border-radius:50%;border:2px solid rgba(196,151,90,.12);color:rgba(196,151,90,.25);font-size:1.15rem;cursor:pointer;transition:all .35s ease;display:flex;align-items:center;justify-content:center;font-family:"Noto Serif SC",serif;backdrop-filter:blur(6px);background:rgba(26,21,16,.5);touch-action:manipulation;user-select:none;-webkit-user-select:none}
 .music-toggle:hover{color:rgba(196,151,90,.5);border-color:rgba(196,151,90,.3);background:rgba(26,21,16,.7);transform:translateY(-2px)}
 .music-toggle:active{transform:translateY(0) scale(.95)}
 .music-toggle .music-tooltip{position:absolute;top:-22px;left:50%;transform:translateX(-50%);background:rgba(26,21,16,.85);border:1px solid rgba(196,151,90,.12);border-radius:4px;padding:2px 8px;font-size:.62rem;color:rgba(196,151,90,.5);white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none}
@@ -3800,87 +3800,107 @@ updateStartStats();
 })();
 
 // ===== 背景音乐控制 =====
+// 使用 <audio> 元素播放 MP3，按钮点击直接控制
 let bgmPlaying = false;
 let bgmMuted = false;
-let bgmUserInteracted = false;
+let bgmReady = false;
 
-function toggleMusic(){
-  bgmUserInteracted = true;
-  const audio = document.getElementById('bgMusic');
-  const icon = document.getElementById('musicIcon');
-  const btn = document.getElementById('musicToggle');
-  const tip = document.getElementById('musicTooltip');
+const audio = document.getElementById('bgMusic');
+const musicBtn = document.getElementById('musicToggle');
+const musicIcon = document.getElementById('musicIcon');
+const musicTip = document.getElementById('musicTooltip');
 
-  if(bgmMuted || audio.paused){
-    // 播放
-    audio.volume = 0.5;
-    audio.play().then(()=>{
-      bgmPlaying = true;
-      bgmMuted = false;
-      btn.classList.add('playing');
-      icon.textContent = '♫';
-      tip.textContent = '古乐';
-      localStorage.setItem('hqMusicMuted', '0');
-    }).catch((err)=>{
-      console.warn('BGM播放失败:', err);
-      // 如果 MP3 加载失败，降级为 Web Audio 合成
-      tip.textContent = '加载中';
-      audio.load();
-      audio.play().then(()=>{
-        bgmPlaying = true;
-        btn.classList.add('playing');
-        icon.textContent = '♫';
-        tip.textContent = '古乐';
-      }).catch(()=>{
-        tip.textContent = '无音乐';
-      });
-    });
+// MP3 加载完成
+audio.addEventListener('canplaythrough', () => {
+  bgmReady = true;
+});
+
+audio.addEventListener('error', () => {
+  console.warn('BGM加载失败，尝试重载');
+  bgmReady = false;
+  // 重试
+  setTimeout(()=>{ audio.load(); }, 2000);
+});
+
+audio.addEventListener('loadeddata', () => {
+  bgmReady = true;
+});
+
+// 循环播放
+audio.addEventListener('ended', () => {
+  audio.currentTime = 0;
+  audio.play().catch(()=>{});
+});
+
+function updateMusicUI(){
+  if(bgmPlaying && !bgmMuted){
+    musicBtn.classList.add('playing');
+    musicIcon.textContent = '♫';
+    musicTip.textContent = '古乐';
   } else {
-    // 静音
-    audio.pause();
-    bgmPlaying = false;
-    bgmMuted = true;
-    btn.classList.remove('playing');
-    icon.textContent = '♪';
-    tip.textContent = '静音';
-    localStorage.setItem('hqMusicMuted', '1');
+    musicBtn.classList.remove('playing');
+    musicIcon.textContent = '♪';
+    musicTip.textContent = '静音';
   }
 }
 
-// 初始化：根据 localStorage 恢复状态
+function playMusic(){
+  if(!bgmReady){
+    // 还没加载完，先加载再播放
+    audio.load();
+    // 等待加载
+    const checkReady = setInterval(()=>{
+      if(bgmReady || audio.readyState >= 3){
+        clearInterval(checkReady);
+        audio.play().then(()=>{
+          bgmPlaying = true; bgmMuted = false; updateMusicUI();
+          localStorage.setItem('hqMusicMuted','0');
+        }).catch(()=>{
+          console.warn('播放失败');
+        });
+      }
+    }, 300);
+    // 超时5秒放弃
+    setTimeout(()=>clearInterval(checkReady), 5000);
+    return;
+  }
+  audio.volume = 0.5;
+  audio.play().then(()=>{
+    bgmPlaying = true; bgmMuted = false; updateMusicUI();
+    localStorage.setItem('hqMusicMuted','0');
+  }).catch((err)=>{
+    console.warn('播放失败:', err);
+    musicTip.textContent = '需点击页面';
+    // 提示用户需要交互
+  });
+}
+
+function stopMusic(){
+  audio.pause();
+  bgmPlaying = false; bgmMuted = true;
+  updateMusicUI();
+  localStorage.setItem('hqMusicMuted','1');
+}
+
+function toggleMusic(){
+  bgmPlaying = false; // 清除可能被其他逻辑设置的状态
+  if(bgmMuted || audio.paused){
+    playMusic();
+  } else {
+    stopMusic();
+  }
+}
+
+// 初始化：恢复上次状态
 (function(){
   const wasMuted = localStorage.getItem('hqMusicMuted') === '1';
-  const audio = document.getElementById('bgMusic');
+  bgmMuted = wasMuted;
+  updateMusicUI();
   if(wasMuted){
-    bgmMuted = true;
-    audio.volume = 0.5;
+    audio.pause();
   }
-
-  const startOnInteraction = () => {
-    bgmUserInteracted = true;
-    if(!wasMuted && !bgmPlaying){
-      audio.volume = 0.5;
-      audio.play().then(()=>{
-        bgmPlaying = true;
-        const btn = document.getElementById('musicToggle');
-        const icon = document.getElementById('musicIcon');
-        btn.classList.add('playing');
-        icon.textContent = '♫';
-      }).catch(()=>{});
-    } else if(wasMuted){
-      const btn = document.getElementById('musicToggle');
-      const icon = document.getElementById('musicIcon');
-      btn.classList.remove('playing');
-      icon.textContent = '♪';
-    }
-    document.removeEventListener('click', startOnInteraction);
-    document.removeEventListener('touchstart', startOnInteraction);
-  };
-  document.addEventListener('click', startOnInteraction);
-  document.addEventListener('touchstart', startOnInteraction);
-
-  // 循环播放
-  audio.addEventListener('ended', ()=>{ audio.currentTime = 0; audio.play().catch(()=>{}); });
+  // 尝试预加载
+  audio.load();
 })();
 </script>
 </body>
