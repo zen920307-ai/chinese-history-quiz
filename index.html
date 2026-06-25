@@ -234,13 +234,16 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;
 
 /* 响应式 */
 /* ===== 背景音乐按钮 ===== */
-.music-toggle{position:fixed;bottom:24px;left:24px;z-index:1000;width:42px;height:42px;border-radius:50%;background:rgba(196,151,90,.08);border:1px solid rgba(196,151,90,.15);color:#c4975a;font-size:1.2rem;cursor:pointer;transition:all .35s ease;display:flex;align-items:center;justify-content:center;font-family:"Noto Serif SC",serif;backdrop-filter:blur(6px)}
-.music-toggle:hover{background:rgba(196,151,90,.14);border-color:rgba(196,151,90,.3);transform:translateY(-2px)}
+.music-toggle{position:fixed;bottom:24px;left:24px;z-index:1000;width:44px;height:44px;border-radius:50%;border:2px solid rgba(196,151,90,.12);color:rgba(196,151,90,.25);font-size:1.15rem;cursor:pointer;transition:all .35s ease;display:flex;align-items:center;justify-content:center;font-family:"Noto Serif SC",serif;backdrop-filter:blur(6px);background:rgba(26,21,16,.5)}
+.music-toggle:hover{color:rgba(196,151,90,.5);border-color:rgba(196,151,90,.3);background:rgba(26,21,16,.7);transform:translateY(-2px)}
 .music-toggle:active{transform:translateY(0) scale(.95)}
-.music-toggle .music-tooltip{position:absolute;bottom:-26px;left:50%;transform:translateX(-50%);background:rgba(26,21,16,.85);border:1px solid rgba(196,151,90,.12);border-radius:4px;padding:2px 8px;font-size:.62rem;color:rgba(196,151,90,.5);white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none}
+.music-toggle .music-tooltip{position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);background:rgba(26,21,16,.85);border:1px solid rgba(196,151,90,.12);border-radius:4px;padding:2px 8px;font-size:.62rem;color:rgba(196,151,90,.5);white-space:nowrap;opacity:0;transition:opacity .3s;pointer-events:none}
 .music-toggle:hover .music-tooltip{opacity:1}
-.music-toggle.playing{background:rgba(196,151,90,.12);border-color:rgba(196,151,90,.25);box-shadow:0 0 12px rgba(196,151,90,.08)}
-.music-toggle.playing::after{content:"";position:absolute;width:8px;height:8px;top:-1px;right:-1px;border-radius:50%;background:#4caf50;box-shadow:0 0 6px rgba(76,175,80,.35);animation:musicPulse 1.5s ease infinite}
+/* 播放状态：亮金色 */
+.music-toggle.playing{color:#d4a860;border-color:rgba(212,168,96,.35);background:rgba(212,168,96,.08);box-shadow:0 0 12px rgba(212,168,96,.08)}
+.music-toggle.playing:hover{box-shadow:0 0 20px rgba(212,168,96,.15)}
+.music-toggle.playing::after{content:"●";position:absolute;top:-1px;right:-1px;font-size:7px;line-height:1;color:#4caf50;text-shadow:0 0 6px rgba(76,175,80,.5);animation:musicPulse 1.5s ease infinite}
+/* 静音状态：暗淡 */
 @keyframes musicPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.2)}}
 
 @media(max-width:600px){
@@ -3795,13 +3798,13 @@ updateStartStats();
 // 使用 Web Audio API 生成古风五声音阶旋律，模拟古筝/古琴音色
 let bgmCtx = null;
 let bgmPlaying = false;
-let bgmUserInteracted = false;
+let bgmMuted = false;
+let bgmMasterGain = null;
 
 // 中国五声音阶（C 调: 宫=C4, 商=D4, 角=E4, 徵=G4, 羽=A4）
 const PENTATONIC = [261.63, 293.66, 329.63, 392.00, 440.00];
 
 // 更悠扬的古筝/古琴风格旋律（0=宫,1=商,2=角,3=徵,4=羽）
-// 采用更慢、更舒展的序列，模拟古筝刮奏和泛音
 const BGM_MELODY = [
   [0,2,4,3,2,0,2,3],
   [1,3,4,4,3,1,3,4],
@@ -3813,13 +3816,9 @@ const BGM_MELODY = [
   [2,3,4,0,2,3,4,0],
 ];
 
-// 创建古筝/古琴风格的 periodicWave（包含丰富的泛音列）
 function createZhengWave(ctx){
   const real = new Float32Array(16);
   const imag = new Float32Array(16);
-  // 基频 + 泛音：模拟古筝拨弦后富含高次泛音的音色
-  // 1  2  3  4  5  6  7  8  9  10
-  // 基 八 五 八 三 五 七 二 三 四 度泛音
   const harmonics = [1.0, 0.6, 0.2, 0.3, 0.08, 0.15, 0.06, 0.1, 0.04, 0.05];
   for(let i=0; i<harmonics.length; i++){
     real[i] = 0;
@@ -3834,14 +3833,26 @@ function initBGM(){
       bgmCtx = new (window.AudioContext || window.webkitAudioContext)();
     } catch(e){ return; }
   }
+  if(!bgmMasterGain){
+    bgmMasterGain = bgmCtx.createGain();
+    bgmMasterGain.gain.value = 1;
+    bgmMasterGain.connect(bgmCtx.destination);
+  }
+}
+
+function setBgmVolume(v){
+  if(!bgmMasterGain || !bgmCtx) return;
+  bgmMasterGain.gain.linearRampToValueAtTime(v, bgmCtx.currentTime + 0.1);
 }
 
 function startBGM(){
-  if(bgmPlaying) return;
+  if(bgmPlaying && !bgmMuted) return;
   initBGM();
   if(!bgmCtx) return;
   
   bgmPlaying = true;
+  bgmMuted = false;
+  setBgmVolume(1);
   document.getElementById('musicToggle').classList.add('playing');
   document.getElementById('musicIcon').textContent = '♫';
   localStorage.setItem('hqMusicMuted', '0');
@@ -3857,13 +3868,11 @@ function playBGMSequence(){
   if(!_bgmWave) _bgmWave = createZhengWave(bgmCtx);
   
   const now = bgmCtx.currentTime;
-  let time = now + 0.8; // 小延迟开始
+  let time = now + 0.8;
   
-  // 每个音符持续时间（更慢，更悠扬）
   const noteDuration = 1.2;
   const noteGap = 0.05;
   
-  // 随机选一段旋律
   const segIdx = Math.floor(Math.random() * BGM_MELODY.length);
   const segment = BGM_MELODY[segIdx];
   
@@ -3871,21 +3880,20 @@ function playBGMSequence(){
     const freq = PENTATONIC[idx];
     const startTime = time + i * (noteDuration + noteGap);
     
-    // ===== 主音色（使用 periodicWave 模拟古筝） =====
+    // 主音色
     const osc = bgmCtx.createOscillator();
     const gain = bgmCtx.createGain();
     osc.setPeriodicWave(_bgmWave);
     osc.frequency.setValueAtTime(freq, startTime);
-    // 古筝拨弦：快速起音 → 缓慢衰减
     gain.gain.setValueAtTime(0, startTime);
     gain.gain.linearRampToValueAtTime(0.10, startTime + 0.03);
     gain.gain.exponentialRampToValueAtTime(0.001, startTime + noteDuration * 0.85);
     osc.connect(gain);
-    gain.connect(bgmCtx.destination);
+    gain.connect(bgmMasterGain);
     osc.start(startTime);
-    osc.stop(startTime + noteDuration);
+    osc.stop(startTime + noteDuration + 0.1);
     
-    // ===== 低八度泛音层（增加厚度） =====
+    // 低八度泛音层
     if(i % 2 === 1){
       const osc2 = bgmCtx.createOscillator();
       const gain2 = bgmCtx.createGain();
@@ -3895,12 +3903,12 @@ function playBGMSequence(){
       gain2.gain.linearRampToValueAtTime(0.04, startTime + 0.04);
       gain2.gain.exponentialRampToValueAtTime(0.001, startTime + noteDuration * 0.6);
       osc2.connect(gain2);
-      gain2.connect(bgmCtx.destination);
+      gain2.connect(bgmMasterGain);
       osc2.start(startTime);
-      osc2.stop(startTime + noteDuration);
+      osc2.stop(startTime + noteDuration + 0.1);
     }
     
-    // ===== 高八度泛音（增加晶莹感，像古筝泛音） =====
+    // 高八度泛音
     if(i % 3 === 0){
       const osc3 = bgmCtx.createOscillator();
       const gain3 = bgmCtx.createGain();
@@ -3910,13 +3918,12 @@ function playBGMSequence(){
       gain3.gain.linearRampToValueAtTime(0.025, startTime + 0.13);
       gain3.gain.exponentialRampToValueAtTime(0.001, startTime + noteDuration * 0.4);
       osc3.connect(gain3);
-      gain3.connect(bgmCtx.destination);
+      gain3.connect(bgmMasterGain);
       osc3.start(startTime + 0.1);
-      osc3.stop(startTime + noteDuration);
+      osc3.stop(startTime + noteDuration + 0.1);
     }
   });
   
-  // 每段完后稍作呼吸再播下一段
   const segmentDuration = segment.length * (noteDuration + noteGap);
   bgmCtx._timer = setTimeout(() => {
     playBGMSequence();
@@ -3929,17 +3936,41 @@ function stopBGM(){
     clearTimeout(bgmCtx._timer);
     bgmCtx._timer = null;
   }
+  // 取消所有已调度但未播放的音符（已开始播放的由 masterGain 控制）
+  if(bgmCtx) bgmCtx.suspend();
+}
+
+function resumeBGM(){
+  if(bgmCtx) bgmCtx.resume();
+}
+
+function muteBGM(){
+  bgmMuted = true;
+  bgmPlaying = false;
+  if(bgmCtx) bgmCtx.suspend();
+  document.getElementById('musicToggle').classList.remove('playing');
+  document.getElementById('musicIcon').textContent = '♪';  // 静音图标
+  localStorage.setItem('hqMusicMuted', '1');
+}
+
+function unmuteBGM(){
+  if(bgmMuted && !bgmPlaying){
+    bgmMuted = false;
+    bgmPlaying = true;
+    if(bgmCtx) bgmCtx.resume();
+    document.getElementById('musicToggle').classList.add('playing');
+    document.getElementById('musicIcon').textContent = '♫';  // 播放图标
+    localStorage.setItem('hqMusicMuted', '0');
+    playBGMSequence();
+  }
 }
 
 function toggleMusic(){
   bgmUserInteracted = true;
-  if(bgmPlaying){
-    stopBGM();
-    document.getElementById('musicToggle').classList.remove('playing');
-    document.getElementById('musicIcon').textContent = '♪';
-    localStorage.setItem('hqMusicMuted', '1');
+  if(bgmMuted || !bgmPlaying){
+    unmuteBGM();
   } else {
-    startBGM();
+    muteBGM();
   }
 }
 
@@ -3948,8 +3979,13 @@ function toggleMusic(){
   initBGM();
   const startOnInteraction = () => {
     if(bgmUserInteracted) return;
-    if(localStorage.getItem('hqMusicMuted') !== '1' && !bgmPlaying){
+    const wasMuted = localStorage.getItem('hqMusicMuted') === '1';
+    if(!wasMuted){
       startBGM();
+    } else {
+      // 之前静音过，更新 UI
+      document.getElementById('musicToggle').classList.remove('playing');
+      document.getElementById('musicIcon').textContent = '♪';
     }
     document.removeEventListener('click', startOnInteraction);
     document.removeEventListener('touchstart', startOnInteraction);
